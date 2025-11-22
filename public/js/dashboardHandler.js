@@ -10,8 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const labels = window.dashboardData?.labels || [];
     const totals = window.dashboardData?.totals || [];
     const composition = window.dashboardData?.composition || [];
-    const buildings =window.dashboardData?.buildings || [];
-    const wastePerBuilding =window.dashboardData?.wastePerBuilding || [];
 
 
     /* -------------------------------------------------------
@@ -78,43 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
             options: {
                 plugins: { legend: { display: false } },
                 cutout: "60%"
-            }
-        });
-    }
-
-    /* -------------------------------------------------------
-     * 4. BUILDING LINE CHART (Total Weight Per Building)
-     * ----------------------------------------------------- */
-
-    const buildingCanvas = document.getElementById("buildingLineChart");
-
-    if (buildingCanvas) {
-        const ctxLine = buildingCanvas.getContext("2d");
-
-        // Prepare datasets
-        const datasets = buildings.map((building, index) => {
-            const color = `hsl(${index * 60 % 360}, 70%, 50%)`; // distinct color per building
-
-            return {
-                label: building,
-                data: labels.map(date => wasteData[date][building]), // get daily total for this building
-                borderColor: color,
-                backgroundColor: color,
-                fill: false, // line chart, no area fill
-                tension: 0.3 // smooth line
-            };
-        });
-
-        new Chart(ctxLine, {
-            type: "line",
-            data: {
-                labels: formattedLabels,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true } }
             }
         });
     }

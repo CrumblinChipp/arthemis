@@ -65,30 +65,6 @@ class DashboardController extends Controller
             ->toArray();
                 
         // 5. Daily waste per building
-        $buildings = WasteEntry::distinct()->pluck('building')->toArray();
-
-        $wastePerBuilding = [];
-
-        foreach ($dates as $date) {
-            $dailyData = WasteEntry::where('date', $date)
-                ->select('building', DB::raw('SUM(residual + recyclable + biodegradable + infectious) as total'))
-                ->groupBy('building')
-                ->get()
-                ->pluck('total', 'building')
-                ->toArray();
-
-            // Fill missing buildings with 0
-            foreach ($buildings as $b) {
-                if (!isset($dailyData[$b])) {
-                    $dailyData[$b] = 0;
-                }
-            }
-
-            // Keep buildings in a consistent order
-            ksort($dailyData);
-
-            $wastePerBuilding[$date] = $dailyData;
-        }
 
         // 6. Pass to view
         return view('dashboard', [
@@ -104,8 +80,6 @@ class DashboardController extends Controller
             ],
             'average' => $avgKg,
             'composition' => $composition,
-            'wastePerBuilding' => $wastePerBuilding,
-            'buildings' => $buildings,
             'selectedRange' => $range, // for UI highlighting of active filter
         ]);
     }

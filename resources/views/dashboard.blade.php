@@ -119,18 +119,21 @@
     <main id="mainContent" class="flex-1 p-6">
       <!-- Dashboard Content -->
       <section data-section="dashboard" class="content-section">
-        <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-        <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
-          <select
-              name="days"
-              onchange="this.form.submit()"
-              class="bg-white text-black p-2 rounded border border-gray-300"
-          >
-              <option value="7"  {{ $selectedRange == 7 ? 'selected' : '' }}>Last Week</option>
-              <option value="30" {{ $selectedRange == 30 ? 'selected' : '' }}>Last 30 Days</option>
-              <option value="90" {{ $selectedRange == 90 ? 'selected' : '' }}>Last 90 Days</option>
-          </select>
-        </form>
+        <div class="flex">
+            <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
+            <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+              <select
+                  name="days"
+                  onchange="this.form.submit()"
+                  class="bg-white text-black p-2 rounded border border-gray-300"
+              >
+                  <option value="7"  {{ $selectedRange == 7 ? 'selected' : '' }}>Last Week</option>
+                  <option value="30" {{ $selectedRange == 30 ? 'selected' : '' }}>Last 30 Days</option>
+                  <option value="90" {{ $selectedRange == 90 ? 'selected' : '' }}>Last 90 Days</option>
+              </select>
+            </form>
+        </div>
+
 
         <div id="dashboard-graphs">
           <!-- Top stats -->
@@ -240,9 +243,7 @@
       window.dashboardData = {
         labels: @json($labels),
         totals: @json($totals),
-        buildings: @json($buildings)
         composition: @json(array_values($composition))
-        wastePerBuilding: @json($wastePerBuilding)
     };
 </script>
 <script src="{{ asset('js/dashboardHandler.js') }}"></script>
