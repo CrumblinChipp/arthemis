@@ -27,7 +27,6 @@
 <div class="flex">
     <!-- Sidebar -->
     <aside class="
-        fixed top-0 left-0
         bg-[#0f2a1a] text-white flex
         md:flex-col items-center md: items-center
         md:justify-start w-full md:w-72
@@ -35,8 +34,8 @@
         h-14 md:h-screen
         px-0 pr-0 md:px-0 md:pr-0
         md:pt-6
-        z-50
-    ">
+        z-50">
+
         <!-- Logo -->
         <div class="flex items-center gap-3 md:mb-8">
             <div class="h-8 w-8 rounded-full bg-green-700 flex items-center justify-center text-white font-bold">A</div>
@@ -93,7 +92,7 @@
 
         <!-- Account Setting -->
         <a href="#"
-          data-nav="data"
+          data-nav="setting"
           class="nav-item w-full flex flex-col
           md:flex-row items-center gap-2
           px-3 py-2 rounded-md text-gray-200
@@ -119,9 +118,10 @@
     <main id="mainContent" class="flex-1 p-6">
       <!-- Dashboard Content -->
       <section data-section="dashboard" class="content-section">
+        <!-- Filter function -->
         <div class="flex">
             <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-            <form method="GET" action="{{ route('dashboard') }}" class="mb-4">
+            <form method="GET" action="{{ route('dashboard') }}" class="flex justify-center items-center mb-4">
               <select
                   name="days"
                   onchange="this.form.submit()"
@@ -133,7 +133,6 @@
               </select>
             </form>
         </div>
-
 
         <div id="dashboard-graphs">
           <!-- Top stats -->
@@ -163,45 +162,26 @@
             <!-- Line chart area -->
             <div class="md:col-span-2 card p-4">
               <div class="mb-3 font-medium">Overall weight</div>
-              <canvas id="lineChart" height="90"></canvas>
+              <canvas id="lineChart" height="130"></canvas>
             </div>
 
             <!-- Pie/composition -->
             <div class="card p-4 md:col-span-1">
               <div class="mb-3 font-medium">Waste composition</div>
-              <div class="flex gap-4">
-                <div style="width:140px; height:140px;">
-                  <canvas id="donutChart"></canvas>
-                </div>
-                <div class="flex-1">
-                  <div class="space-y-3">
-                    <div class="p-3 rounded bg-gray-100">
-                      <div class="text-sm font-medium">Biodegradable</div>
-                      <div class="text-lg font-bold">{{ $composition['biodegradable'] ?? 0 }} kg</div>
-                    </div>
-                    <div class="p-3 rounded bg-gray-100">
-                      <div class="text-sm font-medium">Residual</div>
-                      <div class="text-lg font-bold">{{ $composition['residual'] ?? 0 }} kg</div>
-                    </div>
-                    <div class="p-3 rounded bg-gray-100">
-                      <div class="text-sm font-medium">Recyclable</div>
-                      <div class="text-lg font-bold">{{ $composition['recyclable'] ?? 0 }} kg</div>
-                    </div>
-                    <div class="p-3 rounded bg-gray-100">
-                      <div class="text-sm font-medium">Infectious</div>
-                      <div class="text-lg font-bold">{{ $composition['infectious'] ?? 0 }} kg</div>
-                    </div>
-                  </div>
-                </div>
+              <div class="flex justify-center items-center h-64">
+                <canvas id="donutChart"></canvas>
               </div>
             </div>
           </div>
 
-          <!-- PerBuilding Chart -->
+          <!-- PerBuilding Line Chart -->
           <div class="mt-6 card p-4">
-            <div class="md:col-span-2 card p-4">
-              <div class="mb-3 font-medium">Waste Generated per Building</div>
-              <canvas id="buildingLineChart" height="90"></canvas>
+            <div class="mb-3 font-medium">Waste Generated per Building</div>
+            <div class="flex flex-col md:flex-row gap-4">
+              <div class="flex-1">
+                <canvas id="buildingLineChart" height="300"></canvas>
+              </div>
+              <div id="perBuildingSummary" class="w-64 flex flex-col gap-2"></div>
             </div>
           </div>
 
@@ -232,6 +212,14 @@
           </div>
       </section>
 
+      <!-- Account Setting -->
+      <section data-section="setting" class="content-section hidden">
+          <h1 class="text-3xl font-bold mb-4">Account Setting</h1>
+          <div id="account-setting">
+              <!-- change password, change name -->
+          </div>
+      </section>
+
   </main>
 
 </div>
@@ -240,9 +228,10 @@
 </html>
 
 <script>
-      window.dashboardData = {
+    window.dashboardData = {
         labels: @json($labels),
         totals: @json($totals),
+        buildingDatasets: @json($buildingDatasets),
         composition: @json(array_values($composition))
     };
 </script>

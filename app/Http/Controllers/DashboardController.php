@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Building;
+use App\Models\Campus;
 use App\Models\WasteEntry;
 use Carbon\Carbon;
 use DB;
@@ -11,6 +13,12 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
+        // GETTING THE USERS CAMPUS DETAIL
+        $campusId = auth()->check()
+        ? auth()->user()->campus_id
+        : Campus::first()->id;
+
+        $buildings = Building::where('campus_id', $campusId)->get();
         // RANGE FILTER (default: 7 days)
         $range = $request->input('days', 7);
         if (!in_array($range, [7, 30, 90])) {
@@ -65,6 +73,23 @@ class DashboardController extends Controller
             ->toArray();
                 
         // 5. Daily waste per building
+        $buildingDatasets = [];
+
+        foreach ($buildings as $building) {
+            $dailyTotals = [];
+
+            foreach ($dates as $d) {
+                $dailyTotals[] = WasteEntry::where('building_id', $building->id)
+                    ->where('date', $d)
+                    ->select(DB::raw('SUM(residual + recyclable + biodegradable + infectious) AS total'))
+                    ->value('total') ?? 0;
+            }
+
+            $buildingDatasets[] = [
+                'name' => $building->name,
+                'totals' => $dailyTotals
+            ];
+        }
 
         // 6. Pass to view
         return view('dashboard', [
@@ -80,6 +105,8 @@ class DashboardController extends Controller
             ],
             'average' => $avgKg,
             'composition' => $composition,
+            'buildingLabels' => $buildings->pluck('name'),
+            'buildingDatasets' => $buildingDatasets,
             'selectedRange' => $range, // for UI highlighting of active filter
         ]);
     }
