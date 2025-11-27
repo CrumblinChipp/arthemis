@@ -19,6 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
         '#9966FF', // purple
         '#FF9F40'  // orange
     ];
+    window.openAdminModal = openAdminModal;
+    window.closeAdminModal = closeAdminModal;
+    window.verifyAdmin = verifyAdmin;
 
         const formattedLabels = labels.map(l => {
         try {
@@ -202,5 +205,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     showSection("dashboard");
+
+    /* -------------------------------------------------------
+    * 6. ADMIN MODAL
+    * ----------------------------------------------------- */
+    function openAdminModal() {
+        document.getElementById("adminModal").classList.remove("hidden");
+        }
+
+    function closeAdminModal() {
+        document.getElementById("adminModal").classList.add("hidden");
+        document.getElementById("adminError").classList.add("hidden");
+    }
+
+    function verifyAdmin() {
+        const pass = document.getElementById("adminPassword").value;
+
+        // Hardcoded for now
+        const correct = "superadmin123";
+
+        if (pass === correct) {
+            alert("Admin verified!");
+            closeAdminModal();
+
+            // later: redirect to admin page
+            // window.location.href = "/admin";
+        } else {
+            document.getElementById("adminError").classList.remove("hidden");
+        }
+    }
 
 });

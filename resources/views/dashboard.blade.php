@@ -24,17 +24,16 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-<div class="flex">
+<div class="flex w-full">
     <!-- Sidebar -->
     <aside class="
-        bg-[#0f2a1a] text-white flex
-        md:flex-col items-center md: items-center
-        md:justify-start w-full md:w-72
-        fixed md:static top-0 left-0
-        h-14 md:h-screen
-        px-0 pr-0 md:px-0 md:pr-0
+        bg-[#0f2a1a] text-white flex items-center
+        fixed top-0 left-0 z-50
+        w-full h-14
+        md:flex-col md:items-center md:justify-start
+        md:w-72 md:h-screen md:static md:fixed
         md:pt-6
-        z-50">
+        ">
 
         <!-- Logo -->
         <div class="flex items-center gap-3 md:mb-8">
@@ -97,8 +96,20 @@
           md:flex-row items-center gap-2
           px-3 py-2 rounded-md text-gray-200
           hover:bg-green-900/30 transition">
-            <span>𝄜</span>
+            <span>⚙</span>
             <span class="hidden md:inline text-2xl">Account Settings</span>
+            
+        </a>
+
+        <!-- Admin Setting -->
+        <a href="#"
+          data-nav="admin"
+          class="nav-item w-full flex flex-col
+          md:flex-row items-center gap-2
+          px-3 py-2 rounded-md text-gray-200
+          hover:bg-green-900/30 transition">
+            <span>⚙</span>
+            <span class="hidden md:inline text-2xl">Admin Settings</span>
             
         </a>
 
@@ -115,23 +126,40 @@
     </aside>
 
     <!--Main-->
-    <main id="mainContent" class="flex-1 p-6">
+    <main id="mainContent" class="pt-16 md:pt-[15px] md:ml-[300px] w-full">
       <!-- Dashboard Content -->
       <section data-section="dashboard" class="content-section">
         <!-- Filter function -->
-        <div class="flex">
+        <div class="flex justify-between items-center mb-4">
             <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-            <form method="GET" action="{{ route('dashboard') }}" class="flex justify-center items-center mb-4">
-              <select
-                  name="days"
-                  onchange="this.form.submit()"
-                  class="bg-white text-black p-2 rounded border border-gray-300"
-              >
-                  <option value="7"  {{ $selectedRange == 7 ? 'selected' : '' }}>Last Week</option>
-                  <option value="30" {{ $selectedRange == 30 ? 'selected' : '' }}>Last 30 Days</option>
-                  <option value="90" {{ $selectedRange == 90 ? 'selected' : '' }}>Last 90 Days</option>
+            <!-- ADMIN Button -->
+            <button onclick="openAdminModal()" class=" felx justify-end items-center bg-green-500 text-white px-4 py-2 rounded">
+              Admin
+            </button>
+        </div>
+        <div class= "flex justify-between items-center mb-4" >
+          <!-- Campus Filter -->
+          <form id="campusFilterForm" class="flex justify-start items-center mb-4">
+              <select name="campus" onchange="this.form.submit()"
+              class="bg-white text-black p-2 rounded border border-gray-300">
+                  @foreach ($campuses as $c)
+                      <option value="{{ $c->id }}" {{ $selectedCampus == $c->id ? 'selected' : '' }}>
+                          {{ $c->name }}
+                      </option>
+                  @endforeach
               </select>
-            </form>
+          </form>
+          <!--Time filter-->
+          <form method="GET" action="{{ route('dashboard') }}" class="flex justify-end items-right mb-4">
+            <select
+                name="days"
+                onchange="this.form.submit()"
+                class="bg-white text-black p-2 rounded border border-gray-300">
+                <option value="7"  {{ $selectedRange == 7 ? 'selected' : '' }}>Last Week</option>
+                <option value="30" {{ $selectedRange == 30 ? 'selected' : '' }}>Last 30 Days</option>
+                <option value="90" {{ $selectedRange == 90 ? 'selected' : '' }}>Last 90 Days</option>
+            </select>
+          </form>
         </div>
 
         <div id="dashboard-graphs">
@@ -220,10 +248,42 @@
           </div>
       </section>
 
+      <!-- Admin Setting -->
+      <section data-section="admin" class="content-section hidden">
+          <h1 class="text-3xl font-bold mb-4">Admin Setting</h1>
+          <div id="admin-setting">
+              <!-- change password, change name -->
+          </div>
+      </section>
+
   </main>
 
 </div>
 
+<!--admin modal-->
+<div id="adminModal" class="fixed inset-0 hidden flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white p-6 rounded-md shadow-lg w-80">
+      <h2 class="text-xl font-bold mb-4">Admin Verification</h2>
+
+      <input type="password" id="adminPassword"
+          class="border w-full px-3 py-2 mb-3 rounded-md"
+          placeholder="Enter admin password">
+
+      <button onclick="verifyAdmin()"
+          class="bg-blue-600 w-full text-white py-2 rounded-md">
+          Verify
+      </button>
+
+      <button onclick="closeAdminModal()"
+          class="mt-2 w-full py-2 border rounded-md">
+          Cancel
+      </button>
+
+      <p id="adminError" class="text-red-600 mt-2 hidden">
+          Incorrect password.
+      </p>
+  </div>
+</div>
 </body>
 </html>
 
