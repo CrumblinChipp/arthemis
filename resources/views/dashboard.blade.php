@@ -259,9 +259,7 @@
                         class="admin-nav-item p-4 text-left hover:bg-green-900/20 border-b">
                     Edit Building
                 </button>
-
             </div>
-
 
             <!-- Right Panel: Admin Page Content -->
             <div id="admin-content" class="hidden md:block flex-1 p-6">
@@ -272,7 +270,11 @@
 
                 <div id="admin-content-inner">
                   <div id="add-campus-page" class="hidden">
-                    <form id="add-campus-form" enctype="multipart/form-data">
+                    <form 
+                        action="{{ route('admin.addCampus') }}"
+                        method="POST"
+                        enctype="multipart/form-data">
+                      @csrf
                         <h2 class="text-2xl font-bold mb-6">Add New Campus</h2>
 
                         <div class="mb-4">
@@ -301,8 +303,8 @@
                                   class="w-full border rounded px-3 py-2">
                         </div>
 
-                        <button type="submit" 
-                                class="px-6 py-2 bg-green-800 text-white rounded hover:bg-green-900">
+                        <button type="submit"
+                                class="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
                             Add Campus
                         </button>
                     </form>
@@ -348,6 +350,12 @@
       </p>
   </div>
 </div>
+
+<script>
+    const addCampusRoute = "{{ route('admin.addCampus') }}";
+</script> 
+<script src="{{ asset('js/dashboardHandler.js') }}"></script>
+
 </body>
 </html>
 
@@ -359,4 +367,3 @@
         composition: @json(array_values($composition))
     };
 </script>
-<script src="{{ asset('js/dashboardHandler.js') }}"></script>

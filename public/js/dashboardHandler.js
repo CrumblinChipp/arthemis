@@ -301,6 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Initialize dynamic fields if Add Campus
         if (pageId === "add-campus") {
             initAddBuildingButton();
+            initAddCampusSubmit();
         }
     }
 
@@ -326,6 +327,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
             div.querySelector('.remove-building-btn').addEventListener('click', () => div.remove());
         });
+    }
+
+    /* -------------------------------------------------------
+    * 7. ADD CAMPUS
+    * ----------------------------------------------------- */
+    function initAddCampusSubmit() {
+        const form = document.getElementById("add-campus-form");
+
+        if (!form || form.dataset.bound === "true") return;
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch(addCampusRoute, { 
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    form.reset();
+
+                    document.getElementById('buildings-wrapper').innerHTML = `
+                        <div class="flex items-center mb-2">
+                            <input type="text" name="buildings[]" 
+                                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
+                                placeholder="Enter building name" required>
+                        </div>
+                    `;
+                } else {
+                    alert("Something went wrong.");
+                }
+            })
+            .catch(err => console.error(err));
+        });
+
+        form.dataset.bound = "true";
     }
 
 });
