@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     data: totals,
                     borderWidth: 2,
                     fill:false,
-                    borderColor: "#0062ffff",
+                    borderColor: "#00a711ff",
                 }]
             },
             options: {
@@ -177,7 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-
     /* -------------------------------------------------------
     * 5. NAVIGATION HIGHLIGHT + SECTION SWITCHING
     * ----------------------------------------------------- */
@@ -209,30 +208,124 @@ document.addEventListener("DOMContentLoaded", () => {
     /* -------------------------------------------------------
     * 6. ADMIN MODAL
     * ----------------------------------------------------- */
-    function openAdminModal() {
+    // OPEN MODAL
+    document.getElementById("openAdminModal").addEventListener("click", () => {
         document.getElementById("adminModal").classList.remove("hidden");
-        }
+    }); 
 
+    // CLOSE MODAL
     function closeAdminModal() {
         document.getElementById("adminModal").classList.add("hidden");
         document.getElementById("adminError").classList.add("hidden");
     }
 
+    // CLICK OUTSIDE TO CLOSE
+    document.getElementById("adminModal").addEventListener("click", (e) => {
+        if (e.target === e.currentTarget) {
+            closeAdminModal();
+        }
+    });
+
+    // VERIFY PASSWORD
     function verifyAdmin() {
         const pass = document.getElementById("adminPassword").value;
 
-        // Hardcoded for now
-        const correct = "superadmin123";
+        fetch("/admin/verify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ password: pass })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                closeAdminModal();
+                location.reload(); // reload page so the admin nav appears
+            } else {
+                document.getElementById("adminError").classList.remove("hidden");
+            }
+        });
+    }
+    /* -------------------------------------------------------
+    * 7. ADMIN NAVIGATION
+    * ----------------------------------------------------- */
 
-        if (pass === correct) {
-            alert("Admin verified!");
-            closeAdminModal();
+    document.getElementById("admin-back").addEventListener("click", function () {
+        document.getElementById("admin-nav").classList.remove("hidden");
+        document.getElementById("admin-content").classList.add("hidden");
+    });
 
-            // later: redirect to admin page
-            // window.location.href = "/admin";
-        } else {
-            document.getElementById("adminError").classList.remove("hidden");
+    // Admin nav buttons
+    const adminNavItems = document.querySelectorAll("[data-admin-page]");
+    const adminPages = document.querySelectorAll("#admin-content-inner > div"); // all pages inside content inner
+
+    adminNavItems.forEach(button => {
+        button.addEventListener("click", function () {
+            const page = this.getAttribute("data-admin-page");
+            const isMobile = window.innerWidth < 768;
+
+            // Show selected page
+            showAdminPage(page);
+
+            // Mobile behavior
+            if (isMobile) {
+                document.getElementById("admin-nav").classList.add("hidden");
+                document.getElementById("admin-content").classList.remove("hidden");
+            } 
+            // Desktop behavior
+            else {
+                document.getElementById("admin-nav").classList.remove("hidden");
+                document.getElementById("admin-content").classList.remove("hidden");
+            }
+        });
+    });
+
+    // Function to show one admin page and highlight the active button
+    function showAdminPage(pageId) {
+        // Hide all pages
+        adminPages.forEach(p => p.classList.add("hidden"));
+
+        // Remove active class from all buttons
+        adminNavItems.forEach(btn => btn.classList.remove("bg-green-900", "text-green-400"));
+
+        // Show the selected page
+        const page = document.getElementById(pageId + "-page"); // match ID
+        if (page) page.classList.remove("hidden");
+
+        // Highlight the clicked button
+        const activeBtn = document.querySelector(`.admin-nav-item[data-admin-page="${pageId}"]`);
+        if (activeBtn) activeBtn.classList.add("bg-green-900", "text-green-400");
+
+        // Initialize dynamic fields if Add Campus
+        if (pageId === "add-campus") {
+            initAddBuildingButton();
         }
+    }
+
+
+
+    /* -------------------------------------------------------
+    * 7. ADD BUILDING TEXBOX
+    * ----------------------------------------------------- */
+    function initAddBuildingButton() {
+        const addBuildingBtn = document.getElementById('add-building-btn');
+        const buildingsWrapper = document.getElementById('buildings-wrapper');
+
+        addBuildingBtn.addEventListener('click', () => {
+            const div = document.createElement('div');
+            div.classList.add('flex', 'items-center', 'mb-2');
+            div.innerHTML = `
+                <input type="text" name="buildings[]" 
+                    class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
+                    placeholder="Enter building name">
+                <button type="button" class="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 remove-building-btn">×</button>
+            `;
+            buildingsWrapper.appendChild(div);
+
+            div.querySelector('.remove-building-btn').addEventListener('click', () => div.remove());
+        });
     }
 
 });

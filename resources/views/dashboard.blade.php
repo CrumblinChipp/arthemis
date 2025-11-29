@@ -5,13 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Artemis — Dashboard</title>
 
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+
+
   <script src="https://cdn.tailwindcss.com"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     .sidebar {
-      background: #142d1b; /* deep green */
+      background: #142d1b;
       color: #cfe4d5;
       min-height: 100vh;
     }
@@ -89,29 +92,18 @@
             <span class="hidden md:inline text-2xl">Data</span>
         </a>
 
-        <!-- Account Setting -->
-        <a href="#"
-          data-nav="setting"
-          class="nav-item w-full flex flex-col
-          md:flex-row items-center gap-2
-          px-3 py-2 rounded-md text-gray-200
-          hover:bg-green-900/30 transition">
-            <span>⚙</span>
-            <span class="hidden md:inline text-2xl">Account Settings</span>
-            
-        </a>
-
         <!-- Admin Setting -->
-        <a href="#"
+        @if(session('admin_verified'))
+            <a href="#"
           data-nav="admin"
           class="nav-item w-full flex flex-col
           md:flex-row items-center gap-2
           px-3 py-2 rounded-md text-gray-200
           hover:bg-green-900/30 transition">
-            <span>⚙</span>
-            <span class="hidden md:inline text-2xl">Admin Settings</span>
-            
-        </a>
+                <span>⚙</span>
+                <span class="hidden md:inline text-2xl">Admin Settings</span>
+            </a>
+        @endif
 
 
         <!-- Desktop logout -->
@@ -126,15 +118,16 @@
     </aside>
 
     <!--Main-->
-    <main id="mainContent" class="pt-16 md:pt-[15px] md:ml-[300px] w-full">
+    <main id="mainContent" class="pt-16 md:pt-[15px] ml-0 md:ml-[300px] w-full">
       <!-- Dashboard Content -->
       <section data-section="dashboard" class="content-section">
         <!-- Filter function -->
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
             <!-- ADMIN Button -->
-            <button onclick="openAdminModal()" class=" felx justify-end items-center bg-green-500 text-white px-4 py-2 rounded">
-              Admin
+            <button id="openAdminModal" 
+                    class="px-4 py-2 bg-green-700 text-white rounded-md absolute top-4 right-4">
+                Admin
             </button>
         </div>
         <div class= "flex justify-between items-center mb-4" >
@@ -240,20 +233,91 @@
           </div>
       </section>
 
-      <!-- Account Setting -->
-      <section data-section="setting" class="content-section hidden">
-          <h1 class="text-3xl font-bold mb-4">Account Setting</h1>
-          <div id="account-setting">
-              <!-- change password, change name -->
-          </div>
-      </section>
-
-      <!-- Admin Setting -->
+      <!-- Admin Content -->
       <section data-section="admin" class="content-section hidden">
-          <h1 class="text-3xl font-bold mb-4">Admin Setting</h1>
-          <div id="admin-setting">
-              <!-- change password, change name -->
-          </div>
+        <!-- Admin Settings Wrapper -->
+        <div id="admin-wrapper" class="flex w-full min-h-screen">
+            <!-- Middle Sidebar: Admin Navigation -->
+            <div id="admin-nav"
+                class="w-full md:w-64 bg-white min-h-screen border-r flex-shrink-0 flex flex-col
+                        transition-transform duration-300 md:translate-x-0
+                        fixed md:static inset-0 z-40">
+
+                <h2 class="text-xl font-bold p-4 border-b">Admin Setting</h2>
+
+                <button data-admin-page="add-campus"
+                        class="admin-nav-item p-4 text-left hover:bg-green-900/20 border-b">
+                    + Add Campus
+                </button>
+
+                <button data-admin-page="edit-campus"
+                        class="admin-nav-item p-4 text-left hover:bg-green-900/20 border-b">
+                    Edit Campus
+                </button>
+
+                <button data-admin-page="edit-building"
+                        class="admin-nav-item p-4 text-left hover:bg-green-900/20 border-b">
+                    Edit Building
+                </button>
+
+            </div>
+
+
+            <!-- Right Panel: Admin Page Content -->
+            <div id="admin-content" class="hidden md:block flex-1 p-6">
+                <button id="admin-back"
+                        class="md:hidden mb-4 px-4 py-2 bg-green-800 text-white rounded">
+                    ← Back
+                </button>
+
+                <div id="admin-content-inner">
+                  <div id="add-campus-page" class="hidden">
+                    <form id="add-campus-form" enctype="multipart/form-data">
+                        <h2 class="text-2xl font-bold mb-6">Add New Campus</h2>
+
+                        <div class="mb-4">
+                            <label for="campus-name" class="block font-medium mb-1">Campus Name</label>
+                            <input type="text" id="campus-name" name="campus_name"
+                                  class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600" 
+                                  placeholder="Enter campus name" required>
+                        </div>
+
+                        <div id="buildings-wrapper" class="mb-4">
+                            <label class="block font-medium mb-1">Buildings</label>
+                            <div class="flex items-center mb-2">
+                                <input type="text" name="buildings[]" 
+                                      class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
+                                      placeholder="Enter building name" required>
+                            </div>
+                        </div>
+                        <button type="button" id="add-building-btn" 
+                                class="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                            + Add Another Building
+                        </button>
+
+                        <div class="mb-4">
+                            <label for="campus-map" class="block font-medium mb-1">Campus Map (Image)</label>
+                            <input type="file" id="campus-map" name="campus_map" accept="image/*"
+                                  class="w-full border rounded px-3 py-2">
+                        </div>
+
+                        <button type="submit" 
+                                class="px-6 py-2 bg-green-800 text-white rounded hover:bg-green-900">
+                            Add Campus
+                        </button>
+                    </form>
+                  </div>
+                  <div id="edit-campus-page" class="hidden">
+                      <h2 class="text-2xl font-bold">Edit Campus</h2>
+                  </div>
+                  <div id="edit-building-page" class="hidden">
+                      <h2 class="text-2xl font-bold">Edit Building</h2>
+                  </div>
+
+
+                </div>
+            </div>
+        </div>
       </section>
 
   </main>
