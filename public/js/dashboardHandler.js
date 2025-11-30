@@ -1,7 +1,3 @@
-/************************************************************
- *  DASHBOARD SCRIPT (charts + navigation + section switching)
- ************************************************************/
-
 document.addEventListener("DOMContentLoaded", () => {
 
     /* -------------------------------------------------------
@@ -17,7 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
         '#FFCE56', // yellow
         '#4BC0C0', // green
         '#9966FF', // purple
-        '#FF9F40'  // orange
+        '#FF9F40',  // orange
+        '#8cff40ff',
+        '#7074efff'
     ];
     window.openAdminModal = openAdminModal;
     window.closeAdminModal = closeAdminModal;
@@ -119,7 +117,6 @@ document.addEventListener("DOMContentLoaded", () => {
     * 4. BUILDING LINE CHART (Total Weight PER BUILDING)
     * ----------------------------------------------------- */
 
-    // Prepare datasets (no labels for Chart.js legend)
     const datasets = buildingDatasets.map((b, index) => ({
         data: b.totals,
         borderWidth: 2,
@@ -131,7 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
         b.totals.reduce((sum, val) => sum + val, 0)
     );
 
-    // Render the chart
     new Chart(document.getElementById("buildingLineChart"), {
         type: 'line',
         data: {
@@ -305,10 +301,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
-
     /* -------------------------------------------------------
-    * 7. ADD BUILDING TEXBOX
+    * 8. ADD BUILDING TEXBOX
     * ----------------------------------------------------- */
     function initAddBuildingButton() {
         const addBuildingBtn = document.getElementById('add-building-btn');
@@ -330,7 +324,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* -------------------------------------------------------
-    * 7. ADD CAMPUS
+    * 9. ADD CAMPUS
     * ----------------------------------------------------- */
     function initAddCampusSubmit() {
         const form = document.getElementById("add-campus-form");
@@ -371,5 +365,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         form.dataset.bound = "true";
     }
+
+    /* -------------------------------------------------------
+    * 10. CAMPUS EDITING
+    * ----------------------------------------------------- */
+
+
 
 });

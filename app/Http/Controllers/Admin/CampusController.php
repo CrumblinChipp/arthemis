@@ -45,4 +45,40 @@ class CampusController extends Controller
             'campus' => $campus,
         ]);
     }
+
+    public function update(Request $request, $id)
+    {
+        $campus = Campus::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'buildings' => 'array',
+            'buildings.*' => 'string|max:255',
+            'map' => 'nullable|image|max:2048',
+        ]);
+
+        $campus->name = $request->name;
+
+        // Update buildings
+        if ($request->has('buildings')) {
+            foreach ($request->buildings as $buildingId => $buildingName) {
+                $building = Building::find($buildingId);
+                if ($building) {
+                    $building->update(['name' => $buildingName]);
+                }
+            }
+        }
+
+        // Handle map upload
+        if ($request->hasFile('map')) {
+            $path = $request->file('map')->store('maps', 'public');
+            $campus->map = $path;
+        }
+
+        $campus->save();
+
+        return redirect()->back()->with('success', 'Campus updated successfully!');
+    }
+
+
 }

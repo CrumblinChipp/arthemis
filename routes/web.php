@@ -16,9 +16,10 @@ Route::post('/admin/verify', [App\Http\Controllers\AdminAuthController::class, '
 
 Route::middleware(['adminVerified'])->group(function () {
 
-    Route::get('/admin/settings', function () {
-        return view('admin.settings');
-    })->name('admin.settings');
+    Route::get('/admin/settings', [CampusController::class, 'editPage'])
+        ->middleware('adminVerified')
+        ->name('admin.settings');
+
 
     Route::post('/campus/add', function () {
         return 'campus added';
@@ -30,5 +31,10 @@ Route::middleware(['adminVerified'])->group(function () {
 
 });
 
-    Route::post('/admin/campus/store', [CampusController::class, 'store'])->name('admin.campus.store');
-    Route::post('/admin/add-campus', [CampusController::class, 'store'])->name('admin.addCampus');
+Route::post('/admin/campus/store', [CampusController::class, 'store'])->name('admin.campus.store');
+Route::post('/admin/add-campus', [CampusController::class, 'store'])->name('admin.addCampus');
+
+Route::put('/admin/campus/{id}', [CampusController::class, 'update'])->name('admin.campus.update');
+
+
+

@@ -25,6 +25,20 @@ class DashboardController extends Controller
 
         $campuses = Campus::select('id', 'name')->get();
 
+        $campus = null;
+        $buildings = collect();
+        if ($selectedCampus) {
+            $campus = Campus::with('buildings')->find($selectedCampus);
+        }
+
+        if ($selectedCampus) {
+            $campus = Campus::with('buildings')->find($selectedCampus);
+            if ($campus) {
+                $buildings = $campus->buildings;
+            }
+        }
+
+
 
         /* -----------------------------------------------------
          * 2. GET BUILDINGS OF SELECTED CAMPUS
@@ -154,6 +168,8 @@ class DashboardController extends Controller
             'selectedRange' => $range,
             'campuses' => $campuses,
             'selectedCampus' => $selectedCampus,
+            'campus' => $campus,
+            'buildings' => $buildings,
         ]);
     }
 }

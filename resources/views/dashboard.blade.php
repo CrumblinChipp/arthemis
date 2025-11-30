@@ -25,7 +25,7 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+< class="bg-gray-100 text-gray-800">
 
 <div class="flex w-full">
     <!-- Sidebar -->
@@ -40,7 +40,7 @@
 
         <!-- Logo -->
         <div class="flex items-center gap-3 md:mb-8">
-            <div class="h-8 w-8 rounded-full bg-green-700 flex items-center justify-center text-white font-bold">A</div>
+            <div id="openAdminModal" class="h-8 w-8 rounded-full bg-green-700 flex items-center justify-center text-white font-bold">A</div>
 
             <!-- Hide text on mobile -->
             <div class="hidden md:block">
@@ -121,15 +121,10 @@
     <main id="mainContent" class="pt-16 md:pt-[15px] ml-0 md:ml-[300px] w-full">
       <!-- Dashboard Content -->
       <section data-section="dashboard" class="content-section">
-        <!-- Filter function -->
         <div class="flex justify-between items-center mb-4">
             <h1 class="text-3xl font-bold mb-4">Dashboard</h1>
-            <!-- ADMIN Button -->
-            <button id="openAdminModal" 
-                    class="px-4 py-2 bg-green-700 text-white rounded-md absolute top-4 right-4">
-                Admin
-            </button>
         </div>
+        <!-- Filter function -->
         <div class= "flex justify-between items-center mb-4" >
           <!-- Campus Filter -->
           <form id="campusFilterForm" class="flex justify-start items-center mb-4">
@@ -234,7 +229,7 @@
       </section>
 
       <!-- Admin Content -->
-      <section data-section="admin" class="content-section hidden">
+      <section data-section="admin" class="content-section">
         <!-- Admin Settings Wrapper -->
         <div id="admin-wrapper" class="flex w-full min-h-screen">
             <!-- Middle Sidebar: Admin Navigation -->
@@ -309,21 +304,78 @@
                         </button>
                     </form>
                   </div>
+
                   <div id="edit-campus-page" class="hidden">
                       <h2 class="text-2xl font-bold">Edit Campus</h2>
+                      <div id="editCampusContainer">
+                        <form id="adminCampusFilterForm" class="flex justify-start items-center mb-4">
+                            <select name="campus" onchange="this.form.submit()"
+                            class="bg-white text-black p-2 rounded border border-gray-300">
+                                @foreach ($campuses as $c)
+                                    <option value="{{ $c->id }}" {{ $selectedCampus == $c->id ? 'selected' : '' }}>
+                                        {{ $c->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+
+                        <form action="{{ route('admin.campus.update', $campus->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                            @csrf
+                            @method('PUT')
+
+                            <!-- Campus Name -->
+                            <div>
+                                <label for="campus_name" class="block font-medium mb-1">Campus Name</label>
+                                <input type="text" name="name" id="campus_name" value="{{ old('name', $campus->name) }}"
+                                    class="w-full p-2 border border-gray-300 rounded" required>
+                            </div>
+
+                            <!-- Buildings -->
+                            <div>
+                                <label class="block font-medium mb-1">Buildings</label>
+                                <div id="building-wrapper" class="grid grid-cols-2 gap-2">
+                                      @foreach($buildings as $building)
+                                          <input 
+                                              type="text" 
+                                              name="buildings[{{ $building->id }}]" 
+                                              value="{{ $building->name }}" 
+                                              class="border rounded px-2 py-1 mb-2 w-full">
+                                      @endforeach
+                                    <button type="button" id="add-building-btn" 
+                                            class="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                                        + Add Another Building
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Campus Map -->
+                            <div>
+                                <label class="block font-medium mb-1">Campus Map</label>
+                                @if($campus->map)
+                                    <img src="{{ asset('storage/' . $campus->map) }}" alt="Current Map" class="w-64 h-auto mb-2 border rounded">
+                                @endif
+                                <input type="file" name="map" accept="maps/*" class="block w-full text-sm text-gray-700">
+                            </div>
+
+                            <!-- Submit -->
+                            <div>
+                                <button type="submit"
+                                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+                                    Update Campus
+                                </button>
+                            </div>
+                        </form>
+                      </div>
                   </div>
+                  
                   <div id="edit-building-page" class="hidden">
                       <h2 class="text-2xl font-bold">Edit Building</h2>
                   </div>
-
-
                 </div>
             </div>
         </div>
       </section>
-
-  </main>
-
+    </main>
 </div>
 
 <!--admin modal-->
