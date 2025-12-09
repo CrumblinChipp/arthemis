@@ -251,6 +251,11 @@
                 Welcome to our platform. Join us today and experience excellence in every interaction.
             </div>
         </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+    <a href="{{ route('home') }}" style="color: #10b981; text-decoration: none; font-weight: 600;">
+        ← Back to Home
+    </a>
+</div>
 
         <div class="form-container">
             <div class="tabs">
