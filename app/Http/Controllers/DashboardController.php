@@ -15,10 +15,11 @@ class DashboardController extends Controller
     {
         // GETTING THE USERS CAMPUS DETAIL
         $campusId = auth()->check()
-        ? auth()->user()->campus_id
-        : Campus::first()->id;
+            ? auth()->user()->campus_id
+            : Campus::firstOrCreate([], ['name' => 'Default Campus'])->id;
 
         $buildings = Building::where('campus_id', $campusId)->get();
+        
         // RANGE FILTER (default: 7 days)
         $range = $request->input('days', 7);
         if (!in_array($range, [7, 30, 90])) {

@@ -1,3 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARTHEMIS - Dashboard</title>
+    <style>
+        /* Your existing styles */
+    </style>
+</head>
+<body>
+    <!-- ADD THIS HEADER WITH LOGOUT BUTTON -->
+    <header style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); padding: 20px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto;">
+            <h1 style="color: white; margin: 0; font-size: 28px; letter-spacing: 2px;">ARTHEMIS</h1>
+            
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <span style="color: white; font-weight: 500;">
+                    Welcome, {{ auth()->user()->name }}
+                </span>
+                
+                <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                    @csrf
+                    <button type="submit" style="
+                        padding: 10px 20px;
+                        background: rgba(255, 255, 255, 0.2);
+                        color: white;
+                        border: 2px solid white;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        font-size: 14px;
+                        transition: all 0.3s;
+                    ">
+                        Sign Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- YOUR EXISTING DASHBOARD CONTENT BELOW -->
+    <main style="padding: 40px;">
+        <!-- Your existing dashboard content stays here -->
+    </main>
+</body>
+</html>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -101,17 +149,6 @@
             <span class="hidden md:inline text-2xl">Account Settings</span>
             
         </a>
-
-
-        <!-- Desktop logout -->
-        <div class="hidden md:block mt-auto mb-6">
-            <a href="#" class="inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Sign out</a>
-        </div>
-
-        <!-- Mobile logout icon: aligned to right -->
-        <div class="md:hidden absolute right-4">
-            <span class="text-2xl">⏻</span>
-        </div>
     </aside>
 
     <!--Main-->
