@@ -16,6 +16,193 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
         }
+        /* Cloud decorations */
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 100px;
+            opacity: 0.9;
+            z-index: 2;
+        }
+
+        .cloud-1 {
+            width: 180px;
+            height: 80px;
+            top: 80px;
+            left: 50px;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .cloud-2 {
+            width: 220px;
+            height: 90px;
+            top: 150px;
+            right: 100px;
+            animation: float 10s ease-in-out infinite 2s;
+        }
+
+        .cloud-3 {
+            width: 150px;
+            height: 70px;
+            bottom: 200px;
+            left: 100px;
+            animation: float 9s ease-in-out infinite 1s;
+        }
+
+        .cloud-4 {
+            width: 200px;
+            height: 85px;
+            bottom: 150px;
+            right: 150px;
+            animation: float 11s ease-in-out infinite 3s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 650px;
+            z-index: 10;
+            position: relative;
+            padding-right: 40px;
+        }
+
+        .hero-content h1 {
+            font-size: 56px;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 32px;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-btn {
+            padding: 16px 40px;
+            background: rgba(15, 32, 39, 0.9);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-btn:hover {
+            background: rgba(15, 32, 39, 1);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+        /* Features Section */
+        .features {
+            padding: 100px 60px;
+            background: white;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 42px;
+            color: #2c3e50;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            padding: 40px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-radius: 16px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.2);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #10b981, #047857);
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            color: #047857;
+            margin-bottom: 16px;
+        }
+
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 20px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                flex-direction: column;
+                padding: 100px 20px 40px 20px;
+                text-align: center;
+            }
+
+            .hero-content {
+                padding-right: 0;
+                max-width: 100%;
+            }
+
+            .hero-content h1 {
+                font-size: 36px;
+            }
+
+            .hero-illustration {
+                margin-top: 40px;
+                max-width: 100%;
+            }
+
+            .features {
+                padding: 60px 20px;
+            }
+
+            .cloud {
+                display: none;
+            }
+        }
 
         /* Hero Section */
         .hero {
@@ -354,5 +541,26 @@
             });
         });
     </script>
+      <!-- Features Section -->
+    <section class="features" id="features">
+        <h2>Why Choose ARTHEMIS?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Real-Time Tracking</h3>
+                <p>Monitor waste collection and management in real-time with our advanced dashboard system.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>Interactive Maps</h3>
+                <p>Visualize waste collection points and routes with our comprehensive mapping features.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">♻️</div>
+                <h3>Sustainability Focus</h3>
+                <p>Promote recycling and proper waste segregation for a greener environment.</p>
+            </div>
+        </div>
+    </section>
 </body>
 </html>
