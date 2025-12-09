@@ -208,20 +208,17 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("openAdminModal").addEventListener("click", () => {
         document.getElementById("adminModal").classList.remove("hidden");
     }); 
-
     // CLOSE MODAL
     function closeAdminModal() {
         document.getElementById("adminModal").classList.add("hidden");
         document.getElementById("adminError").classList.add("hidden");
     }
-
     // CLICK OUTSIDE TO CLOSE
     document.getElementById("adminModal").addEventListener("click", (e) => {
         if (e.target === e.currentTarget) {
             closeAdminModal();
         }
     });
-
     // VERIFY PASSWORD
     function verifyAdmin() {
         const pass = document.getElementById("adminPassword").value;
@@ -247,7 +244,6 @@ document.addEventListener("DOMContentLoaded", () => {
     /* -------------------------------------------------------
     * 7. ADMIN NAVIGATION
     * ----------------------------------------------------- */
-
     document.getElementById("admin-back").addEventListener("click", function () {
         document.getElementById("admin-nav").classList.remove("hidden");
         document.getElementById("admin-content").classList.add("hidden");
@@ -306,11 +302,11 @@ document.addEventListener("DOMContentLoaded", () => {
     * ----------------------------------------------------- */
     function initAddBuildingButton() {
         const addBuildingBtn = document.getElementById('add-building-btn');
-        const buildingsWrapper = document.getElementById('buildings-wrapper');
+        const buildingsWrapper = document.getElementById('building-wrapper');
 
         addBuildingBtn.addEventListener('click', () => {
             const div = document.createElement('div');
-            div.classList.add('flex', 'items-center', 'mb-2');
+            div.classList.add('flex', 'items-center', 'mb-2', 'building-item');
             div.innerHTML = `
                 <input type="text" name="buildings[]" 
                     class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
@@ -319,9 +315,15 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
             buildingsWrapper.appendChild(div);
 
-            div.querySelector('.remove-building-btn').addEventListener('click', () => div.remove());
+        });
+
+        document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('remove-building')) {
+            e.target.closest('.building-item').remove();
+            }
         });
     }
+document.addEventListener('DOMContentLoaded', initAddBuildingButton);
 
     /* -------------------------------------------------------
     * 9. ADD CAMPUS
@@ -369,7 +371,6 @@ document.addEventListener("DOMContentLoaded", () => {
     /* -------------------------------------------------------
     * 10. CAMPUS EDITING
     * ----------------------------------------------------- */
-
 
 
 });

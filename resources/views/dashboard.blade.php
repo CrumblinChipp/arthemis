@@ -34,7 +34,7 @@
         fixed top-0 left-0 z-50
         w-full h-14
         md:flex-col md:items-center md:justify-start
-        md:w-72 md:h-screen md:static md:fixed
+        md:w-72 md:h-screen md:fixed
         md:pt-6
         ">
 
@@ -234,7 +234,7 @@
         <div id="admin-wrapper" class="flex w-full min-h-screen">
             <!-- Middle Sidebar: Admin Navigation -->
             <div id="admin-nav"
-                class="w-full md:w-64 bg-white min-h-screen border-r flex-shrink-0 flex flex-col
+                class="w-full md:w-64 bg-white min-h-screen border-r shrink-0 flex flex-col
                         transition-transform duration-300 md:translate-x-0
                         fixed md:static inset-0 z-40">
 
@@ -279,7 +279,7 @@
                                   placeholder="Enter campus name" required>
                         </div>
 
-                        <div id="buildings-wrapper" class="mb-4">
+                        <div id="building-wrapper" class="mb-4">
                             <label class="block font-medium mb-1">Buildings</label>
                             <div class="flex items-center mb-2">
                                 <input type="text" name="buildings[]" 
@@ -333,19 +333,29 @@
                             <!-- Buildings -->
                             <div>
                                 <label class="block font-medium mb-1">Buildings</label>
-                                <div id="building-wrapper" class="grid grid-cols-2 gap-2">
-                                      @foreach($buildings as $building)
-                                          <input 
-                                              type="text" 
-                                              name="buildings[{{ $building->id }}]" 
-                                              value="{{ $building->name }}" 
-                                              class="border rounded px-2 py-1 mb-2 w-full">
-                                      @endforeach
-                                    <button type="button" id="add-building-btn" 
-                                            class="mb-4 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                                        + Add Another Building
-                                    </button>
+
+                                <div id="building-wrapper" class="space-y-2">
+                                    {{-- Existing Buildings --}}
+                                    @foreach($buildings as $building)
+                                        <div class="flex items-center gap-2 building-item">
+                                            <input 
+                                                type="text" 
+                                                name="buildings[{{ $building->id }}]" 
+                                                value="{{ $building->name }}" 
+                                                class="border rounded px-2 py-1 w-full"
+                                            >
+                                            {{-- Remove Button --}}
+                                            <button type="button" class="remove-building text-red-600 font-bold text-lg">
+                                                ✕
+                                            </button>
+                                        </div>
+                                    @endforeach
                                 </div>
+                                
+                                <button type="button" id="add-building-btn" 
+                                        class="mt-3 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                                    + Add Another Building
+                                </button>
                             </div>
 
                             <!-- Campus Map -->
@@ -405,7 +415,7 @@
 
 <script>
     const addCampusRoute = "{{ route('admin.addCampus') }}";
-</script> 
+</script>
 <script src="{{ asset('js/dashboardHandler.js') }}"></script>
 
 </body>
