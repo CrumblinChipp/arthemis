@@ -36,8 +36,7 @@ Route::middleware([AdminVerified::class])->group(function () {
 
     // POST/PUT routes for saving data (these were mostly correct)
     Route::post('/admin/campus/store', [CampusController::class, 'store'])->name('admin.campus.store');
-    Route::put('/admin/campus/{id}', [CampusController::class, 'update'])->name('admin.campus.update');
-
+    Route::put('/admin/campus/{campus}', [CampusController::class, 'update'])->name('admin.campus.update');
     // The DELETE route for permanently removing a campus
     Route::delete('/campus/{campus}', [CampusController::class, 'destroy'])
         ->name('admin.campus.destroy');

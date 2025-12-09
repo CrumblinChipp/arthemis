@@ -8,6 +8,7 @@ use App\Models\Campus;
 use App\Models\Building;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class CampusController extends Controller
 {
@@ -55,11 +56,16 @@ class CampusController extends Controller
         return view('admin.edit-campus', compact('campus'));
     }
 
-    public function update(Request $request, Campus $campus) // Using Route Model Binding here is cleaner
+    public function update(Request $request, Campus $campus)
     {
-        // 1. Validation
-        $validated = $request->validate([
-            'campus_name' => 'required|string|max:255|unique:campuses,name,' . $campus->id,
+    $validated = $request->validate([
+            'campus_name' => [
+                'required',
+                'string',
+                'max:255',
+                // Use Rule::unique to ignore the current record cleanly
+                Rule::unique('campuses', 'name')->ignore($campus->id),
+            ],
             'buildings' => 'required|array|min:1',
             'buildings.*' => 'required|string|max:255',
             'campus_map' => 'nullable|image|max:2048',
