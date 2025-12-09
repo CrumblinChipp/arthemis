@@ -9,6 +9,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 <style>
     .sidebar {
         background: #142d1b;
@@ -20,4 +22,6 @@
         border-radius: 6px;
         box-shadow: 0 0 0 1px rgba(0,0,0,0.03);
     }
+
+    
 </style>

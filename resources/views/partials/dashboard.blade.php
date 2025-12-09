@@ -6,7 +6,6 @@
 
     {{-- Dashboard Content --}}
     <section data-section="dashboard" class="content-section">
-        {{-- Include the actual dashboard content here --}}
         @include('sections.dashboard-content')
     </section>
 

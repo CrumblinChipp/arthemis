@@ -32,11 +32,19 @@
         </button>
 
         <div id="admin-content-inner">
-            {{-- Include the individual admin pages here --}}
-            @include('admin.add-campus')
-            @include('admin.edit-campus')
-            <div id="edit-building-page" class="hidden">
-                <h2 class="text-2xl font-bold">Edit Building</h2>
+            {{-- 1. ADD CAMPUS --}}
+            <div id="add-campus" class="admin-page">
+                @include('admin.add-campus')
+            </div>
+
+            {{-- 2. EDIT CAMPUS (or the list of campuses to edit) --}}
+            <div id="edit-campus" class="admin-page hidden">
+                @include('admin.edit-campus')
+            </div>
+
+            {{-- 3. EDIT BUILDING --}}
+            <div id="edit-building" class="admin-page hidden">
+              <h1 class="text2xl text-amber-50">Edit Buidling</h1>
             </div>
         </div>
     </div>

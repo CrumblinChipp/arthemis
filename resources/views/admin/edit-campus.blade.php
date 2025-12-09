@@ -1,7 +1,7 @@
 @extends('layouts.app') {{-- Adjust this to your main layout --}}
 
 @section('edit-campus')
-<div class="container mx-auto p-4">
+<div id="edit-campus" class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-6">📝 Edit Campus: {{ $campus->name }}</h1>
 
     @if (session('success'))
@@ -30,7 +30,7 @@
         <div class="mb-4">
             <label for="name" class="block text-gray-700 font-bold mb-2">Campus Name</label>
             <input type="text" id="name" name="name" value="{{ old('name', $campus->name) }}" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
         {{-- Campus Map Upload --}}
@@ -40,7 +40,7 @@
                 <p class="text-sm text-gray-600 mb-2">Current map uploaded: <a href="{{ Storage::url($campus->map) }}" target="_blank" class="text-indigo-500 hover:underline">View Map</a></p>
             @endif
             <input type="file" id="map" name="map"
-                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
             <p class="text-xs text-gray-500 mt-1">Max 2MB. Only update to change the current map.</p>
         </div>
 
@@ -52,7 +52,7 @@
                 @foreach ($campus->buildings as $building)
                     <div class="flex items-center building-input">
                         <input type="text" name="buildings[{{ $building->id }}]" value="{{ old('buildings.' . $building->id, $building->name) }}" required
-                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         {{-- Note: For simplicity, this doesn't include deletion. Deletion requires an AJAX call or dedicated controller action. --}}
                         <button type="button" class="remove-building-btn text-red-500 hover:text-red-700 ml-2 text-xl hidden">&times;</button>
                     </div>
@@ -83,7 +83,7 @@
         // Use a temporary key (e.g., new_0, new_1) for buildings without an ID
         newBuildingDiv.innerHTML = `
             <input type="text" name="buildings[new_${newBuildingCounter++}]" placeholder="New Building Name" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             <button type="button" class="remove-building-btn text-red-500 hover:text-red-700 ml-2 text-xl">&times;</button>
         `;
         container.appendChild(newBuildingDiv);

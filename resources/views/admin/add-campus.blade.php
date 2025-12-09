@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('add-campus')
-<div class="container mx-auto p-4">
+<div id="add-campus" class="container mx-auto p-4">
     <h1 class="text-2xl font-bold mb-6">➕ Add New Campus</h1>
 
     @if ($errors->any())
@@ -22,14 +22,14 @@
         <div class="mb-4">
             <label for="campus_name" class="block text-gray-700 font-bold mb-2">Campus Name</label>
             <input type="text" id="campus_name" name="campus_name" value="{{ old('campus_name') }}" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
         {{-- Campus Map Upload --}}
         <div class="mb-4">
             <label for="campus_map" class="block text-gray-700 font-bold mb-2">Campus Map (Optional)</label>
             <input type="file" id="campus_map" name="campus_map"
-                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
             <p class="text-xs text-gray-500 mt-1">Max 2MB. Image format.</p>
         </div>
 
@@ -40,7 +40,7 @@
                 {{-- Initial Building Input --}}
                 <div class="flex items-center building-input">
                     <input type="text" name="buildings[]" placeholder="Building Name (e.g., Admin Block)" required
-                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                     <button type="button" class="remove-building-btn text-red-500 hover:text-red-700 ml-2 text-xl hidden">&times;</button>
                 </div>
             </div>
@@ -65,7 +65,7 @@
         newBuildingDiv.className = 'flex items-center building-input';
         newBuildingDiv.innerHTML = `
             <input type="text" name="buildings[]" placeholder="Building Name" required
-                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             <button type="button" class="remove-building-btn text-red-500 hover:text-red-700 ml-2 text-xl">&times;</button>
         `;
         container.appendChild(newBuildingDiv);

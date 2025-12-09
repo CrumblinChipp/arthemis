@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
         adminNavItems.forEach(btn => btn.classList.remove("bg-green-900", "text-green-400"));
 
         // Show the selected page
-        const page = document.getElementById(pageId + "-page"); // match ID
+        const page = document.getElementById(pageId); // match ID
         if (page) page.classList.remove("hidden");
 
         // Highlight the clicked button
@@ -351,12 +351,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-building')) {
+        if (e.target.classList.contains('remove-building-btn')) {
             e.target.closest('.building-item').remove();
             }
         });
+        addBuildingBtn.dataset.bound = "true";
     }
-document.addEventListener('DOMContentLoaded', initAddBuildingButton);
 
     /* -------------------------------------------------------
     * 9. ADD CAMPUS

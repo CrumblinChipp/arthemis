@@ -15,7 +15,7 @@
     </main>
 </div>
 
-@include('partials.modals') {{-- Partial for modals --}}
+    @include('partials.modals') {{-- Partial for modals --}}
 
 <script>
     // Ensure this route is defined in your routes/web.php
