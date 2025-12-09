@@ -1,60 +1,56 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+let lineChartInstance = null;
+let donutChartInstance = null;
+let buildingLineChartInstance = null;
 
-    /* -------------------------------------------------------
-    * GLOBAL FUNCTIONS (To be called from Blade onclick)
-    * ----------------------------------------------------- */
-    // Moved the functions outside of DOMContentLoaded so they are available globally
-    window.openAdminModal = function() {
-        document.getElementById("adminModal").classList.remove("hidden");
-    };
-    window.closeAdminModal = function() {
-        document.getElementById("adminModal").classList.add("hidden");
-        document.getElementById("adminError").classList.add("hidden");
-    };
-    window.verifyAdmin = function() {
-        // Your existing verifyAdmin logic...
-        const pass = document.getElementById("adminPassword").value;
-        fetch("/admin/verify", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({ password: pass })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                window.closeAdminModal();
-                location.reload(); 
-            } else {
-                document.getElementById("adminError").classList.remove("hidden");
-            }
-        });
-    };
+window.openAdminModal = function() {
+    document.getElementById("adminModal")?.classList.remove("hidden");
+};
+window.closeAdminModal = function() {
+    document.getElementById("adminModal")?.classList.add("hidden");
+    document.getElementById("adminError")?.classList.add("hidden");
+};
+window.verifyAdmin = function() {
+    // Your existing verifyAdmin logic...
+    const pass = document.getElementById("adminPassword").value;
+    fetch("/admin/verify", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            // Use optional chaining (?) for robustness
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
+        },
+        body: JSON.stringify({ password: pass })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.closeAdminModal();
+            location.reload(); 
+        } else {
+            document.getElementById("adminError")?.classList.remove("hidden");
+        }
+    });
+};
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    // const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Unused local const
+
     /* -------------------------------------------------------
      * 1. FETCH SERVER-PASSED DATA
      * ----------------------------------------------------- */
+    // Use optional chaining for safer access
     const labels = window.dashboardData?.labels || [];
     const totals = window.dashboardData?.totals || [];
     const buildingDatasets = window.dashboardData?.buildingDatasets || [];
     const composition = window.dashboardData?.composition || [];
     const colors = [
-        '#FF6384', // red
-        '#36A2EB', // blue
-        '#FFCE56', // yellow
-        '#4BC0C0', // green
-        '#9966FF', // purple
-        '#FF9F40',  // orange
-        '#8cff40ff',
-        '#7074efff'
+        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+        '#9966FF', '#FF9F40', '#8cff40ff', '#7074efff'
     ];
-    window.openAdminModal = openAdminModal;
-    window.closeAdminModal = closeAdminModal;
-    window.verifyAdmin = verifyAdmin;
-
-        const formattedLabels = labels.map(l => {
+    
+    // Formatting labels (dates)
+    const formattedLabels = labels.map(l => {
         try {
             const d = new Date(l);
             const mm = String(d.getMonth() + 1).padStart(2, "0");
@@ -71,9 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const lineCanvas = document.getElementById("lineChart");
 
     if (lineCanvas) {
+        if (lineChartInstance) {
+            lineChartInstance.destroy();
+        }
+
         const ctxLine = lineCanvas.getContext("2d");
 
-        new Chart(ctxLine, {
+        lineChartInstance = new Chart(ctxLine, { // Store new instance
             type: "line",
             data: {
                 labels: formattedLabels,
@@ -100,9 +100,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const donutCanvas = document.getElementById("donutChart");
 
     if (donutCanvas) {
+        if (donutChartInstance) {
+            donutChartInstance.destroy();
+        }
+        
         const donutCtx = donutCanvas.getContext("2d");
 
-        new Chart(donutCtx, {
+        donutChartInstance = new Chart(donutCtx, { // Store new instance
             type: "doughnut",
             data: {
                 labels: ["Biodegradable", "Residual", "Recyclable", "Infectious"],
@@ -143,14 +147,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         });
-
     }
 
     /* -------------------------------------------------------
-    * 4. BUILDING LINE CHART (Total Weight PER BUILDING)
-    * ----------------------------------------------------- */
+     * 4. BUILDING LINE CHART (Total Weight PER BUILDING)
+     * ----------------------------------------------------- */
 
     const datasets = buildingDatasets.map((b, index) => ({
+        label: b.name, // Added label for context
         data: b.totals,
         borderWidth: 2,
         borderColor: colors[index % colors.length],
@@ -160,55 +164,66 @@ document.addEventListener("DOMContentLoaded", () => {
     const buildingTotals = buildingDatasets.map(b =>
         b.totals.reduce((sum, val) => sum + val, 0)
     );
-
-    new Chart(document.getElementById("buildingLineChart"), {
-        type: 'line',
-        data: {
-            labels: formattedLabels, // your formatted dates
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false } // hide Chart.js legend
-            }
+    
+    const buildingCanvas = document.getElementById("buildingLineChart");
+    if (buildingCanvas) {
+        // Destroy existing chart instance if it exists to fix 'Canvas is already in use' error
+        if (buildingLineChartInstance) {
+            buildingLineChartInstance.destroy();
         }
-    });
+
+        buildingLineChartInstance = new Chart(buildingCanvas, { // Store new instance
+            type: 'line',
+            data: {
+                labels: formattedLabels, // your formatted dates
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false } // hide Chart.js legend
+                }
+            }
+        });
+    }
+
 
     // Render separate summary labels
     const summaryContainer = document.getElementById("perBuildingSummary");
-    summaryContainer.innerHTML = ""; // clear existing content
+    if (summaryContainer) {
+        summaryContainer.innerHTML = ""; // clear existing content
 
-    buildingDatasets.forEach((b, i) => {
-        const total = buildingTotals[i];
-        const color = colors[i % colors.length];
+        buildingDatasets.forEach((b, i) => {
+            const total = buildingTotals[i];
+            const color = colors[i % colors.length];
 
-        const labelDiv = document.createElement("div");
-        labelDiv.classList.add("flex", "items-center", "gap-2");
+            const labelDiv = document.createElement("div");
+            labelDiv.classList.add("flex", "items-center", "gap-2");
 
-        // Color marker
-        const marker = document.createElement("span");
-        marker.style.backgroundColor = color;
-        marker.style.width = "20px";
-        marker.style.height = "4px";
-        marker.style.display = "inline-block";
+            // Color marker
+            const marker = document.createElement("span");
+            marker.style.backgroundColor = color;
+            marker.style.width = "20px";
+            marker.style.height = "4px";
+            marker.style.display = "inline-block";
 
-        // Text
-        const text = document.createElement("span");
-        text.textContent = `${b.name}: ${total} kg`;
-        text.classList.add("text-sm", "font-medium", "text-gray-800"); // ensure visible text
+            // Text
+            const text = document.createElement("span");
+            text.textContent = `${b.name}: ${total} kg`;
+            text.classList.add("text-sm", "font-medium", "text-gray-800"); // ensure visible text
 
-        labelDiv.appendChild(marker);
-        labelDiv.appendChild(text);
+            labelDiv.appendChild(marker);
+            labelDiv.appendChild(text);
 
-        summaryContainer.appendChild(labelDiv);
-    });
+            summaryContainer.appendChild(labelDiv);
+        });
+    }
 
 
     /* -------------------------------------------------------
-    * 5. NAVIGATION HIGHLIGHT + SECTION SWITCHING
-    * ----------------------------------------------------- */
+     * 5. NAVIGATION HIGHLIGHT + SECTION SWITCHING
+     * ----------------------------------------------------- */
     const navItems = document.querySelectorAll(".nav-item");
     const sections = document.querySelectorAll(".content-section");
 
@@ -235,51 +250,26 @@ document.addEventListener("DOMContentLoaded", () => {
     showSection("dashboard");
 
     /* -------------------------------------------------------
-    * 6. ADMIN MODAL
-    * ----------------------------------------------------- */
+     * 6. ADMIN MODAL
+     * ----------------------------------------------------- */
     // OPEN MODAL
-    document.getElementById("openAdminModal").addEventListener("click", () => {
-        document.getElementById("adminModal").classList.remove("hidden");
+    document.getElementById("openAdminModal")?.addEventListener("click", () => {
+        document.getElementById("adminModal")?.classList.remove("hidden");
     }); 
-    // CLOSE MODAL
-    function closeAdminModal() {
-        document.getElementById("adminModal").classList.add("hidden");
-        document.getElementById("adminError").classList.add("hidden");
-    }
+    
     // CLICK OUTSIDE TO CLOSE
-    document.getElementById("adminModal").addEventListener("click", (e) => {
+    document.getElementById("adminModal")?.addEventListener("click", (e) => {
         if (e.target === e.currentTarget) {
-            closeAdminModal();
+            window.closeAdminModal(); // Use the global function
         }
     });
-    // VERIFY PASSWORD
-    function verifyAdmin() {
-        const pass = document.getElementById("adminPassword").value;
-
-        fetch("/admin/verify", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify({ password: pass })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                closeAdminModal();
-                location.reload(); // reload page so the admin nav appears
-            } else {
-                document.getElementById("adminError").classList.remove("hidden");
-            }
-        });
-    }
+    
     /* -------------------------------------------------------
-    * 7. ADMIN NAVIGATION
-    * ----------------------------------------------------- */
-    document.getElementById("admin-back").addEventListener("click", function () {
-        document.getElementById("admin-nav").classList.remove("hidden");
-        document.getElementById("admin-content").classList.add("hidden");
+     * 7. ADMIN NAVIGATION
+     * ----------------------------------------------------- */
+    document.getElementById("admin-back")?.addEventListener("click", function () {
+        document.getElementById("admin-nav")?.classList.remove("hidden");
+        document.getElementById("admin-content")?.classList.add("hidden");
     });
 
     // Admin nav buttons
@@ -296,13 +286,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Mobile behavior
             if (isMobile) {
-                document.getElementById("admin-nav").classList.add("hidden");
-                document.getElementById("admin-content").classList.remove("hidden");
+                document.getElementById("admin-nav")?.classList.add("hidden");
+                document.getElementById("admin-content")?.classList.remove("hidden");
             } 
             // Desktop behavior
             else {
-                document.getElementById("admin-nav").classList.remove("hidden");
-                document.getElementById("admin-content").classList.remove("hidden");
+                document.getElementById("admin-nav")?.classList.remove("hidden");
+                document.getElementById("admin-content")?.classList.remove("hidden");
             }
         });
     });
@@ -322,19 +312,22 @@ document.addEventListener("DOMContentLoaded", () => {
         // Highlight the clicked button
         const activeBtn = document.querySelector(`.admin-nav-item[data-admin-page="${pageId}"]`);
         if (activeBtn) activeBtn.classList.add("bg-green-900", "text-green-400");
-
-        // Initialize dynamic fields if Add Campus
-        if (pageId === "add-campus") {
-            initAddBuildingButton();
-            initAddCampusSubmit();
+        
+        // Call initialization functions when a section is opened
+        if (pageId === 'add-campus') {
+            initAddBuildingButton(); // Initialize building buttons
+            initAddCampusSubmit(); // Initialize form submission
         }
     }
 
     /* -------------------------------------------------------
-    * 8. ADD BUILDING TEXBOX
-    * ----------------------------------------------------- */
+     * 8. ADD BUILDING TEXBOX
+     * ----------------------------------------------------- */
     function initAddBuildingButton() {
         const addBuildingBtn = document.getElementById('add-building-btn');
+        // Check for null and if button is already bound to prevent multiple event listeners
+        if (!addBuildingBtn || addBuildingBtn.dataset.bound === "true") return; 
+        
         const buildingsWrapper = document.getElementById('building-wrapper');
 
         addBuildingBtn.addEventListener('click', () => {
@@ -343,38 +336,43 @@ document.addEventListener("DOMContentLoaded", () => {
             div.innerHTML = `
                 <input type="text" name="buildings[]" 
                     class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
-                    placeholder="Enter building name">
+                    placeholder="Enter building name" required>
                 <button type="button" class="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 remove-building-btn">×</button>
             `;
-            buildingsWrapper.appendChild(div);
-
+            buildingsWrapper?.appendChild(div); // Use optional chaining
         });
 
+        // Event delegation for remove button (it was already correctly using delegation)
         document.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-building-btn')) {
-            e.target.closest('.building-item').remove();
+            e.target.closest('.building-item')?.remove();
             }
         });
         addBuildingBtn.dataset.bound = "true";
     }
 
     /* -------------------------------------------------------
-    * 9. ADD CAMPUS
-    * ----------------------------------------------------- */
+     * 9. ADD CAMPUS
+     * ----------------------------------------------------- */
     function initAddCampusSubmit() {
         const form = document.getElementById("add-campus-form");
 
         if (!form || form.dataset.bound === "true") return;
+        
+        // Define the route here if it's available globally via the window object, 
+        // OR define it in the Blade file as a global JS variable.
+        const campusRoute = window.addCampusRoute; 
 
         form.addEventListener("submit", function(e) {
             e.preventDefault();
 
             const formData = new FormData(form);
 
-            fetch(addCampusRoute, { 
+            fetch(campusRoute, { // Using the locally scoped 'campusRoute'
                 method: "POST",
                 headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                    // Use optional chaining (?) for robustness
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
                 },
                 body: formData
             })
@@ -384,8 +382,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert(data.message);
                     form.reset();
 
-                    document.getElementById('buildings-wrapper').innerHTML = `
-                        <div class="flex items-center mb-2">
+                    document.getElementById('building-wrapper').innerHTML = `
+                        <div class="flex items-center mb-2 building-item">
                             <input type="text" name="buildings[]" 
                                 class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600"
                                 placeholder="Enter building name" required>
@@ -400,97 +398,112 @@ document.addEventListener("DOMContentLoaded", () => {
 
         form.dataset.bound = "true";
     }
-
+    
     /* -------------------------------------------------------
-    * 10. WASTE ENTRY SUBMISSION
-    * ----------------------------------------------------- */
+     * 10. WASTE ENTRY SUBMISSION
+     * ----------------------------------------------------- */
     const wasteModal = document.getElementById("wasteModal");
     const confirmModal = document.getElementById("confirmModal");
-
-    document.getElementById("openWasteModal").onclick = () => {
-        wasteModal.classList.remove("hidden");
-        wasteModal.classList.add("flex");
-    };
-
-    document.getElementById("cancelMain").onclick = () => {
-        wasteModal.classList.add("hidden");
-        wasteModal.classList.remove("flex");
-    };
-
-    document.getElementById("submitMain").onclick = () => {
-        confirmModal.classList.remove("hidden");
-        confirmModal.classList.add("flex");
-    };
-
-    document.getElementById("cancelConfirm").onclick = () => {
-        confirmModal.classList.add("hidden");
-        confirmModal.classList.remove("flex");
-    };
-
-    document.getElementById("confirmSubmit").onclick = () => {
-        const payload = {
-            name: document.getElementById("entryName").value,
-            campus_id: document.getElementById("entryCampus").value,
-            building_id: document.getElementById("entryBuilding").value,
-            biodegradable: document.getElementById("bio").value,
-            recyclable: document.getElementById("recyclable").value,
-            residual: document.getElementById("residual").value,
-            infectious: document.getElementById("infectious").value,
-            _token: "{{ csrf_token() }}"
+    
+    if (document.getElementById("openWasteModal")) {
+        document.getElementById("openWasteModal").onclick = () => {
+            wasteModal?.classList.remove("hidden");
+            wasteModal?.classList.add("flex");
         };
+    }
 
-        fetch("/waste-entry/store", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                confirmModal.classList.add("hidden");
-                confirmModal.classList.remove("flex");
-                wasteModal.classList.add("hidden");
-                wasteModal.classList.remove("flex");
+    if (document.getElementById("cancelMain")) {
+        document.getElementById("cancelMain").onclick = () => {
+            wasteModal?.classList.add("hidden");
+            wasteModal?.classList.remove("flex");
+        };
+    }
 
-                alert("Waste entry saved to database!");
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            alert("Submission failed.");
-        });
-    };
+    if (document.getElementById("submitMain")) {
+        document.getElementById("submitMain").onclick = () => {
+            confirmModal?.classList.remove("hidden");
+            confirmModal?.classList.add("flex");
+        };
+    }
+
+    if (document.getElementById("cancelConfirm")) {
+        document.getElementById("cancelConfirm").onclick = () => {
+            confirmModal?.classList.add("hidden");
+            confirmModal?.classList.remove("flex");
+        };
+    }
+
+    if (document.getElementById("confirmSubmit")) {
+        document.getElementById("confirmSubmit").onclick = () => {
+            const payload = {
+                // Using optional chaining and nullish coalescing for safer access
+                name: document.getElementById("entryName")?.value || '', 
+                campus_id: document.getElementById("entryCampus")?.value || '',
+                building_id: document.getElementById("entryBuilding")?.value || '',
+                biodegradable: document.getElementById("bio")?.value || 0,
+                recyclable: document.getElementById("recyclable")?.value || 0,
+                residual: document.getElementById("residual")?.value || 0,
+                infectious: document.getElementById("infectious")?.value || 0,
+                // Assumes this is a server-side rendered token from a templating engine (e.g., Blade)
+                _token: document.querySelector('meta[name="csrf-token"]')?.content 
+            };
+            
+            fetch("/waste-entry/store", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    confirmModal?.classList.add("hidden");
+                    confirmModal?.classList.remove("flex");
+                    wasteModal?.classList.add("hidden");
+                    wasteModal?.classList.remove("flex");
+
+                    alert("Waste entry saved to database!");
+                    location.reload(); // Added reload for dashboard data update
+                } else {
+                    alert("Submission failed. Server error.");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Submission failed.");
+            });
+        };
+    }
 
     /* ---------------------------------------------
-    DYNAMIC BUILDINGS BASED ON SELECTED CAMPUS
-    ---------------------------------------------- */
+     * DYNAMIC BUILDINGS BASED ON SELECTED CAMPUS
+     * ---------------------------------------------- */
 
-    document.getElementById("entryCampus").addEventListener("change", function () {
+    document.getElementById("entryCampus")?.addEventListener("change", function () {
         let campusId = this.value;
+        if (!campusId) return; // Exit if no campus is selected
 
         fetch(`/get-buildings/${campusId}`)
             .then(res => res.json())
             .then(data => {
                 let buildingDropdown = document.getElementById("entryBuilding");
-
+                if (!buildingDropdown) return;
+                
                 buildingDropdown.innerHTML = ""; // clear old options
-                buildingDropdown.innerHTML = `<option value="">Select Building</option>`;
+                // Add default option
+                let defaultOption = document.createElement('option');
+                defaultOption.value = "";
+                defaultOption.textContent = "Select Building";
+                buildingDropdown.appendChild(defaultOption);
 
+                // Populate with new options
                 data.forEach(building => {
-                    buildingDropdown.innerHTML += `
-                        <option value="${building.id}">${building.name}</option>
-                    `;
+                    let option = document.createElement('option');
+                    option.value = building.id;
+                    option.textContent = building.name;
+                    buildingDropdown.appendChild(option);
                 });
-            });
+            })
+            .catch(err => console.error("Error fetching buildings:", err));
     });
-    fetch('/waste-entry/store', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': csrfToken,
-        },
-        body: JSON.stringify(data)
-    })
-
 
 });

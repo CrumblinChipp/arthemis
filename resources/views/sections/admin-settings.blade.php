@@ -44,7 +44,7 @@
 
             {{-- 3. EDIT BUILDING --}}
             <div id="edit-building" class="admin-page hidden">
-              <h1 class="text2xl text-amber-50">Edit Buidling</h1>
+                <h1 class="text2xl text-amber-50">Edit Buidling</h1>
             </div>
         </div>
     </div>

@@ -3,6 +3,7 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CampusController;
 use App\Http\Controllers\WasteEntryController;
+use App\Http\Middleware\AdminVerified;
 
 // Main Dashboard
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -17,9 +18,18 @@ Route::get('/get-buildings/{campusId}', function ($campusId) {
         ->get();
 })->name('api.getBuildings');
 
+Route::put('/admin/campus/{id}', function ($id, Illuminate\Http\Request $request) {
+    $middleware = new AdminVerified;
+    $response = $middleware->handle($request, function ($req) use ($id) {
+        return app(CampusController::class)
+            ->update($req, $id);
+    });
+    return $response;
+});
+
 
 // Admin Routes (Grouped by middleware)
-Route::middleware(['adminVerified'])->group(function () {
+Route::middleware([AdminVerified::class])->group(function () {
 
     // Main Settings Page (List Campuses, or show initial Add Campus form)
     Route::get('/admin/settings', [CampusController::class, 'editPage'])
@@ -37,4 +47,8 @@ Route::middleware(['adminVerified'])->group(function () {
     // POST/PUT routes for saving data (these were mostly correct)
     Route::post('/admin/campus/store', [CampusController::class, 'store'])->name('admin.campus.store');
     Route::put('/admin/campus/{id}', [CampusController::class, 'update'])->name('admin.campus.update');
+
+    // The DELETE route for permanently removing a campus
+    Route::delete('/campus/{campus}', [CampusController::class, 'destroy'])
+        ->name('admin.campus.destroy');
 });

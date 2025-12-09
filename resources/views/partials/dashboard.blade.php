@@ -2,8 +2,6 @@
 
 @section('content')
 
-    {{-- All the page sections go here --}}
-
     {{-- Dashboard Content --}}
     <section data-section="dashboard" class="content-section">
         @include('sections.dashboard-content')
@@ -26,7 +24,7 @@
     </section>
 
     {{-- Admin Content --}}
-    <section data-section="admin" class="content-section">
+    <section data-section="admin" class="content-section hidden">
         {{-- Include the admin settings content here --}}
         @include('sections.admin-settings')
     </section>
