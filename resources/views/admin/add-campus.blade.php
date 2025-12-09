@@ -20,7 +20,7 @@
             <label for="campus_name" class="block text-gray-700 font-bold mb-2">Campus Name</label>
             <input type="text" id="campus_name" name="campus_name" value="{{ old('campus_name') }}" required
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-        </div>
+        </div>  
 
         {{-- Campus Map Upload --}}
         <div class="mb-4">

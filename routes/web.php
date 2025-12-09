@@ -18,16 +18,6 @@ Route::get('/get-buildings/{campusId}', function ($campusId) {
         ->get();
 })->name('api.getBuildings');
 
-Route::put('/admin/campus/{id}', function ($id, Illuminate\Http\Request $request) {
-    $middleware = new AdminVerified;
-    $response = $middleware->handle($request, function ($req) use ($id) {
-        return app(CampusController::class)
-            ->update($req, $id);
-    });
-    return $response;
-});
-
-
 // Admin Routes (Grouped by middleware)
 Route::middleware([AdminVerified::class])->group(function () {
 
