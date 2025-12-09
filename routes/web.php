@@ -1,26 +1,54 @@
 <?php
-
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\CampusController;
+use App\Http\Controllers\WasteEntryController;
+use App\Http\Middleware\AdminVerified;
 
-// Public routes (no authentication required)
-Route::get('/', function () {
-    return view('auth.login-register');
-})->name('home');
+// Main Dashboard
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::get('/auth', function () {
-    return view('auth.login-register');
-})->name('auth.page')->middleware('guest');
+// Waste Entry (No auth middleware shown, but usually you'd want one)
+Route::post('/waste-entry/store', [WasteEntryController::class, 'store'])->name('waste.store');
 
-Route::post('/login', [LoginController::class, 'login'])->name('login');
-Route::post('/register', [RegisterController::class, 'register'])->name('register');
+// AJAX route for fetching buildings
+Route::get('/get-buildings/{campusId}', function ($campusId) {
+    return \App\Models\Building::where('campus_id', $campusId)
+        ->select('id', 'name')
+        ->get();
+})->name('api.getBuildings');
 
-// Protected routes (authentication required)
-Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::put('/admin/campus/{id}', function ($id, Illuminate\Http\Request $request) {
+    $middleware = new AdminVerified;
+    $response = $middleware->handle($request, function ($req) use ($id) {
+        return app(CampusController::class)
+            ->update($req, $id);
+    });
+    return $response;
+});
+
+
+// Admin Routes (Grouped by middleware)
+Route::middleware([AdminVerified::class])->group(function () {
+
+    // Main Settings Page (List Campuses, or show initial Add Campus form)
+    Route::get('/admin/settings', [CampusController::class, 'editPage'])
+        ->name('admin.settings');
     
-    // Add other protected routes here
+    // Dedicated route to show the 'Add Campus' form
+    Route::get('/admin/campus/create', function() {
+        return view('admin.add-campus');
+    })->name('admin.campus.create'); // Or use a dedicated controller method
+
+    // Route to show the 'Edit Campus' form for a specific ID
+    Route::get('/admin/campus/{id}/edit', [CampusController::class, 'editCampus'])
+        ->name('admin.campus.edit');
+
+    // POST/PUT routes for saving data (these were mostly correct)
+    Route::post('/admin/campus/store', [CampusController::class, 'store'])->name('admin.campus.store');
+    Route::put('/admin/campus/{id}', [CampusController::class, 'update'])->name('admin.campus.update');
+
+    // The DELETE route for permanently removing a campus
+    Route::delete('/campus/{campus}', [CampusController::class, 'destroy'])
+        ->name('admin.campus.destroy');
 });

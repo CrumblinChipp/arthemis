@@ -13,57 +13,101 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // GETTING THE USERS CAMPUS DETAIL
-        $campusId = auth()->check()
-            ? auth()->user()->campus_id
-            : Campus::firstOrCreate([], ['name' => 'Default Campus'])->id;
+        /* -----------------------------------------------------
+         * 1. DETERMINE CAMPUS FILTER
+         * --------------------------------------------------- */
 
-        $buildings = Building::where('campus_id', $campusId)->get();
-        
-        // RANGE FILTER (default: 7 days)
-        $range = $request->input('days', 7);
-        if (!in_array($range, [7, 30, 90])) {
-            $range = 7; // safety fallback
+        $userCampusId = auth()->check()
+            ? auth()->user()->campus_id
+            : Campus::first()->id;
+
+        $selectedCampus = $request->input('campus', $userCampusId);
+
+        $campuses = Campus::select('id', 'name')->get();
+
+        $campus = null;
+        $buildings = collect();
+        if ($selectedCampus) {
+            $campus = Campus::with('buildings')->find($selectedCampus);
+            if ($campus) {
+                $buildings = $campus->buildings;
+            }
         }
 
-        // Start date
+
+        /* -----------------------------------------------------
+         * 2. GET BUILDINGS OF SELECTED CAMPUS
+         * --------------------------------------------------- */
+
+        // Use the $buildings collection from step 1 to avoid redundant query
+        $buildingIds = $buildings->pluck('id');
+
+
+        /* -----------------------------------------------------
+         * 3. DATE RANGE FILTER
+         * --------------------------------------------------- */
+
+        $range = $request->input('days', 7);
+        if (!in_array($range, [7, 30, 90])) {
+            $range = 7;
+        }
+
         $startDate = Carbon::now()->subDays($range - 1)->toDateString();
 
-        // 1. Get distinct dates within the selected range
-        $dates = WasteEntry::where('date', '>=', $startDate)
+
+        /* -----------------------------------------------------
+         * 4. GET DATES WITHIN RANGE
+         * --------------------------------------------------- */
+
+        $dates = WasteEntry::whereIn('building_id', $buildingIds)
+            ->where('date', '>=', $startDate)
             ->select('date')
-            ->orderBy('date')
             ->distinct()
+            ->orderBy('date')
             ->pluck('date')
             ->toArray();
 
-        // If no data exists in selected range → generate empty placeholder range
         if (empty($dates)) {
-            $dates = collect(range($range - 1, 0))->map(fn($i) =>
-                Carbon::now()->subDays($i)->toDateString()
-            )->toArray();
+            $dates = collect(range($range - 1, 0))
+                ->map(fn($i) => Carbon::now()->subDays($i)->toDateString())
+                ->toArray();
         }
 
-        // 2. Compute total kg per date
+
+        /* -----------------------------------------------------
+         * 5. TOTAL WASTE PER DATE
+         * --------------------------------------------------- */
+
         $totalsPerDate = [];
+
         foreach ($dates as $d) {
-            $totalsPerDate[] = WasteEntry::where('date', $d)
-                ->select(DB::raw('
-                    SUM(residual + recyclable + biodegradable + infectious) AS total
-                '))
+            $totalsPerDate[] = WasteEntry::whereIn('building_id', $buildingIds)
+                ->where('date', $d)
+                ->selectRaw('SUM(residual + recyclable + biodegradable + infectious) AS total')
                 ->value('total') ?? 0;
         }
 
-        // 3. Summary stats
-        $highestKg   = max($totalsPerDate);
-        $lowestKg    = min($totalsPerDate);
-        $avgKg       = count($totalsPerDate) ? round(array_sum($totalsPerDate) / count($totalsPerDate), 1) : 0;
+
+        /* -----------------------------------------------------
+         * 6. SUMMARY STATS
+         * --------------------------------------------------- */
+
+        $highestKg = max($totalsPerDate);
+        $lowestKg = min($totalsPerDate);
+        $avgKg = count($totalsPerDate)
+            ? round(array_sum($totalsPerDate) / count($totalsPerDate), 1)
+            : 0;
 
         $highestDate = $dates[array_search($highestKg, $totalsPerDate)] ?? null;
         $lowestDate  = $dates[array_search($lowestKg, $totalsPerDate)] ?? null;
 
-        // 4. Composition (sum only inside selected range)
-        $composition = WasteEntry::where('date', '>=', $startDate)
+
+        /* -----------------------------------------------------
+         * 7. WASTE COMPOSITION (ALL BUILDINGS)
+         * --------------------------------------------------- */
+
+        $composition = WasteEntry::whereIn('building_id', $buildingIds)
+            ->where('date', '>=', $startDate)
             ->selectRaw('
                 SUM(biodegradable) as biodegradable,
                 SUM(residual)      as residual,
@@ -72,8 +116,12 @@ class DashboardController extends Controller
             ')
             ->first()
             ->toArray();
-                
-        // 5. Daily waste per building
+
+
+        /* -----------------------------------------------------
+         * 8. PER-BUILDING DAILY WASTE
+         * --------------------------------------------------- */
+
         $buildingDatasets = [];
 
         foreach ($buildings as $building) {
@@ -82,7 +130,8 @@ class DashboardController extends Controller
             foreach ($dates as $d) {
                 $dailyTotals[] = WasteEntry::where('building_id', $building->id)
                     ->where('date', $d)
-                    ->select(DB::raw('SUM(residual + recyclable + biodegradable + infectious) AS total'))
+                    // ADJUSTMENT: Use  suffixes
+                    ->selectRaw('SUM(residual + recyclable + biodegradable + infectious) AS total')
                     ->value('total') ?? 0;
             }
 
@@ -92,8 +141,12 @@ class DashboardController extends Controller
             ];
         }
 
-        // 6. Pass to view
-        return view('dashboard', [
+
+        /* -----------------------------------------------------
+         * 9. RETURN TO VIEW
+         * --------------------------------------------------- */
+
+        return view('partials.dashboard', [
             'labels' => $dates,
             'totals' => $totalsPerDate,
             'highest' => [
@@ -108,7 +161,11 @@ class DashboardController extends Controller
             'composition' => $composition,
             'buildingLabels' => $buildings->pluck('name'),
             'buildingDatasets' => $buildingDatasets,
-            'selectedRange' => $range, // for UI highlighting of active filter
+            'selectedRange' => $range,
+            'campuses' => $campuses,
+            'selectedCampus' => $selectedCampus,
+            'campus' => $campus,
+            'buildings' => $buildings,
         ]);
     }
 }
