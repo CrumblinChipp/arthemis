@@ -1,5 +1,5 @@
 <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-6">📝 Edit Campus: {{ $campus->name }}</h1>
+    <h1 class="text-2xl font-bold mb-6">📝 Edit Campus: {{ $campus->campus_name }}</h1>
 
     @if (session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -26,7 +26,7 @@
         {{-- Campus Name --}}
         <div class="mb-4">
             <label for="name" class="block text-gray-700 font-bold mb-2">Campus Name</label>
-            <input type="text" id="name" name="name" value="{{ old('name', $campus->name) }}" required
+            <input type="text" id="name" name="campus_name" value="{{ old('campus_name', $campus->name) }}" required
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
 
@@ -127,6 +127,26 @@ function updateRemoveButtons(form) {
 // Initialize all forms on page load
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('form').forEach(form => updateRemoveButtons(form));
+    const deleteButton = document.getElementById("delete-campus-btn");
+    const deleteForm = document.getElementById("delete-campus-form");
+
+    if (deleteButton && deleteForm) {
+        deleteButton.addEventListener("click", function() {
+            const campusName = "{{ $campus->name ?? 'this campus' }}"; // Assuming you have $campus available in the blade view
+            
+            const confirmed = confirm(`🛑 WARNING: Are you sure you want to permanently delete the campus "${campusName}"? This action cannot be undone.`);
+
+            if (confirmed) {
+                // Perform a second, more serious confirmation
+                const confirmedAgain = confirm("LAST CHANCE: Deleting will remove all buildings and waste data linked to this campus. Click OK to proceed.");
+                
+                if (confirmedAgain) {
+                    // If the user confirms twice, submit the form
+                    deleteForm.submit();
+                }
+            }
+        });
+    }
 });
 
 </script>

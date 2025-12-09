@@ -59,25 +59,21 @@ class CampusController extends Controller
     {
         // 1. Validation
         $validated = $request->validate([
-            'campus_name' => 'required|string|max:255|unique:campuses,name' . $campus->id,
+            'campus_name' => 'required|string|max:255|unique:campuses,name,' . $campus->id,
             'buildings' => 'required|array|min:1',
             'buildings.*' => 'required|string|max:255',
             'campus_map' => 'nullable|image|max:2048',
         ]);
 
         // 2. Handle Campus Data and Map
-        $campus->name = $validated['name'];
+        $campus->name = $validated['campus_name'];
 
-        if ($request->hasFile('map')) {
-            // Delete old map if it exists
-            if ($campus->map) {
-                Storage::disk('public')->delete($campus->map);
-            }
-            // Store new map
-            $path = $request->file('map')->store('maps', 'public');
-            $campus->map = $path; // <-- CORRECTED: Changed $campus->maps to $campus->map
-        }
+    if ($request->hasFile('campus_map')) {
         
+        $path = $request->file('campus_map')->store('maps', 'public');
+        $campus->map = $path; 
+    }
+            
         $campus->save();
 
         // 3. Handle Buildings (CRUD)
@@ -144,7 +140,7 @@ class CampusController extends Controller
             DB::commit();
 
             // Assuming you have an admin index/list route named 'admin.campus.index' or similar
-            return redirect()->route('admin.dashboard')
+            return redirect()->route('dashboard')
                             ->with('success', 'Campus "' . $campus->name . '" deleted permanently.');
 
         } catch (\Exception $e) {
