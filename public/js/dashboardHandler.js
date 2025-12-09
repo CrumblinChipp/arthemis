@@ -1,5 +1,38 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+    /* -------------------------------------------------------
+    * GLOBAL FUNCTIONS (To be called from Blade onclick)
+    * ----------------------------------------------------- */
+    // Moved the functions outside of DOMContentLoaded so they are available globally
+    window.openAdminModal = function() {
+        document.getElementById("adminModal").classList.remove("hidden");
+    };
+    window.closeAdminModal = function() {
+        document.getElementById("adminModal").classList.add("hidden");
+        document.getElementById("adminError").classList.add("hidden");
+    };
+    window.verifyAdmin = function() {
+        // Your existing verifyAdmin logic...
+        const pass = document.getElementById("adminPassword").value;
+        fetch("/admin/verify", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ password: pass })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.closeAdminModal();
+                location.reload(); 
+            } else {
+                document.getElementById("adminError").classList.remove("hidden");
+            }
+        });
+    };
     /* -------------------------------------------------------
      * 1. FETCH SERVER-PASSED DATA
      * ----------------------------------------------------- */
@@ -369,8 +402,95 @@ document.addEventListener('DOMContentLoaded', initAddBuildingButton);
     }
 
     /* -------------------------------------------------------
-    * 10. CAMPUS EDITING
+    * 10. WASTE ENTRY SUBMISSION
     * ----------------------------------------------------- */
+    const wasteModal = document.getElementById("wasteModal");
+    const confirmModal = document.getElementById("confirmModal");
+
+    document.getElementById("openWasteModal").onclick = () => {
+        wasteModal.classList.remove("hidden");
+        wasteModal.classList.add("flex");
+    };
+
+    document.getElementById("cancelMain").onclick = () => {
+        wasteModal.classList.add("hidden");
+        wasteModal.classList.remove("flex");
+    };
+
+    document.getElementById("submitMain").onclick = () => {
+        confirmModal.classList.remove("hidden");
+        confirmModal.classList.add("flex");
+    };
+
+    document.getElementById("cancelConfirm").onclick = () => {
+        confirmModal.classList.add("hidden");
+        confirmModal.classList.remove("flex");
+    };
+
+    document.getElementById("confirmSubmit").onclick = () => {
+        const payload = {
+            name: document.getElementById("entryName").value,
+            campus_id: document.getElementById("entryCampus").value,
+            building_id: document.getElementById("entryBuilding").value,
+            biodegradable: document.getElementById("bio").value,
+            recyclable: document.getElementById("recyclable").value,
+            residual: document.getElementById("residual").value,
+            infectious: document.getElementById("infectious").value,
+            _token: "{{ csrf_token() }}"
+        };
+
+        fetch("/waste-entry/store", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                confirmModal.classList.add("hidden");
+                confirmModal.classList.remove("flex");
+                wasteModal.classList.add("hidden");
+                wasteModal.classList.remove("flex");
+
+                alert("Waste entry saved to database!");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Submission failed.");
+        });
+    };
+
+    /* ---------------------------------------------
+    DYNAMIC BUILDINGS BASED ON SELECTED CAMPUS
+    ---------------------------------------------- */
+
+    document.getElementById("entryCampus").addEventListener("change", function () {
+        let campusId = this.value;
+
+        fetch(`/get-buildings/${campusId}`)
+            .then(res => res.json())
+            .then(data => {
+                let buildingDropdown = document.getElementById("entryBuilding");
+
+                buildingDropdown.innerHTML = ""; // clear old options
+                buildingDropdown.innerHTML = `<option value="">Select Building</option>`;
+
+                data.forEach(building => {
+                    buildingDropdown.innerHTML += `
+                        <option value="${building.id}">${building.name}</option>
+                    `;
+                });
+            });
+    });
+    fetch('/waste-entry/store', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+        },
+        body: JSON.stringify(data)
+    })
 
 
 });

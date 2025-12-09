@@ -1,0 +1,45 @@
+@extends('layouts.app') {{-- Extends the new main layout --}}
+
+@section('content')
+
+    {{-- All the page sections go here --}}
+
+    {{-- Dashboard Content --}}
+    <section data-section="dashboard" class="content-section">
+        {{-- Include the actual dashboard content here --}}
+        @include('sections.dashboard-content')
+    </section>
+
+    {{-- Maps Content --}}
+    <section data-section="maps" class="content-section hidden">
+        <h1 class="text-3xl font-bold mb-4">Maps</h1>
+        <div id="maps-area">
+             {{-- Map embed/code goes here --}}
+        </div>
+    </section>
+
+    {{-- Data Content --}}
+    <section data-section="data" class="content-section hidden">
+        <h1 class="text-3xl font-bold mb-4">Data Analytics</h1>
+        <div id="data-stats">
+            {{-- Data tables, charts, etc --}}
+        </div>
+    </section>
+
+    {{-- Admin Content --}}
+    <section data-section="admin" class="content-section">
+        {{-- Include the admin settings content here --}}
+        @include('sections.admin-settings')
+    </section>
+
+    {{-- The JS data block for the charts must be kept on the page that extends the layout, before the main JS file. --}}
+    <script>
+        window.dashboardData = {
+            labels: @json($labels),
+            totals: @json($totals),
+            buildingDatasets: @json($buildingDatasets),
+            composition: @json(array_values($composition))
+        };
+    </script>
+
+@endsection

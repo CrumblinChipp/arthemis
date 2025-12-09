@@ -80,5 +80,12 @@ class CampusController extends Controller
         return redirect()->back()->with('success', 'Campus updated successfully!');
     }
 
+    public function editPage($id)
+    {
+        $campus = Campus::with('buildings')->findOrFail($id);
+        // Note: Assuming the view is located at resources/views/admin/edit-campus.blade.php
+        return view('admin.edit-campus', compact('campus'));
+    }
+
 
 }

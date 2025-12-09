@@ -1,40 +1,40 @@
 <?php
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminAuthController;
-use App\Http\Kernel;
 use App\Http\Controllers\Admin\CampusController;
+use App\Http\Controllers\WasteEntryController;
 
-Route::get('/', function () {
-    return view('dashboard');
-});
-
+// Main Dashboard
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::post('/admin/verify', [App\Http\Controllers\AdminAuthController::class, 'verify'])
-    ->name('admin.verify');
+// Waste Entry (No auth middleware shown, but usually you'd want one)
+Route::post('/waste-entry/store', [WasteEntryController::class, 'store'])->name('waste.store');
 
+// AJAX route for fetching buildings
+Route::get('/get-buildings/{campusId}', function ($campusId) {
+    return \App\Models\Building::where('campus_id', $campusId)
+        ->select('id', 'name')
+        ->get();
+})->name('api.getBuildings');
+
+
+// Admin Routes (Grouped by middleware)
 Route::middleware(['adminVerified'])->group(function () {
 
+    // Main Settings Page (List Campuses, or show initial Add Campus form)
     Route::get('/admin/settings', [CampusController::class, 'editPage'])
-        ->middleware('adminVerified')
         ->name('admin.settings');
+    
+    // Dedicated route to show the 'Add Campus' form
+    Route::get('/admin/campus/create', function() {
+        return view('admin.add-campus');
+    })->name('admin.campus.create'); // Or use a dedicated controller method
 
+    // Route to show the 'Edit Campus' form for a specific ID
+    Route::get('/admin/campus/{id}/edit', [CampusController::class, 'editCampus'])
+        ->name('admin.campus.edit');
 
-    Route::post('/campus/add', function () {
-        return 'campus added';
-    })->name('campus.add');
-
-    Route::post('/building/add', function () {
-        return 'building added';
-    })->name('building.add');
-
+    // POST/PUT routes for saving data (these were mostly correct)
+    Route::post('/admin/campus/store', [CampusController::class, 'store'])->name('admin.campus.store');
+    Route::put('/admin/campus/{id}', [CampusController::class, 'update'])->name('admin.campus.update');
 });
-
-Route::post('/admin/campus/store', [CampusController::class, 'store'])->name('admin.campus.store');
-Route::post('/admin/add-campus', [CampusController::class, 'store'])->name('admin.addCampus');
-
-Route::put('/admin/campus/{id}', [CampusController::class, 'update'])->name('admin.campus.update');
-
-
-

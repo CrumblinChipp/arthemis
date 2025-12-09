@@ -29,22 +29,17 @@ class DashboardController extends Controller
         $buildings = collect();
         if ($selectedCampus) {
             $campus = Campus::with('buildings')->find($selectedCampus);
-        }
-
-        if ($selectedCampus) {
-            $campus = Campus::with('buildings')->find($selectedCampus);
             if ($campus) {
                 $buildings = $campus->buildings;
             }
         }
 
 
-
         /* -----------------------------------------------------
          * 2. GET BUILDINGS OF SELECTED CAMPUS
          * --------------------------------------------------- */
 
-        $buildings = Building::where('campus_id', $selectedCampus)->get();
+        // Use the $buildings collection from step 1 to avoid redundant query
         $buildingIds = $buildings->pluck('id');
 
 
@@ -135,6 +130,7 @@ class DashboardController extends Controller
             foreach ($dates as $d) {
                 $dailyTotals[] = WasteEntry::where('building_id', $building->id)
                     ->where('date', $d)
+                    // ADJUSTMENT: Use  suffixes
                     ->selectRaw('SUM(residual + recyclable + biodegradable + infectious) AS total')
                     ->value('total') ?? 0;
             }
@@ -150,7 +146,7 @@ class DashboardController extends Controller
          * 9. RETURN TO VIEW
          * --------------------------------------------------- */
 
-        return view('dashboard', [
+        return view('partials.dashboard', [
             'labels' => $dates,
             'totals' => $totalsPerDate,
             'highest' => [
