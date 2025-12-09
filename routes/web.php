@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CampusController;
 use App\Http\Controllers\WasteEntryController;
 use App\Http\Middleware\AdminVerified;
+use App\Http\Controllers\AdminAuthController;
 
 // Main Dashboard
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -18,26 +19,25 @@ Route::get('/get-buildings/{campusId}', function ($campusId) {
         ->get();
 })->name('api.getBuildings');
 
+#Route::get('/', function () {
+#    return view('landing');
+#})->name('home');
+
+
+Route::get('/auth', function () {
+    return view('auth.login-register');
+})->name('auth.page')->middleware('guest');
+
+Route::post('/admin/verify', [AdminAuthController::class, 'verify'])
+    ->name('admin.verify');
+
 // Admin Routes (Grouped by middleware)
 Route::middleware([AdminVerified::class])->group(function () {
 
     // Main Settings Page (List Campuses, or show initial Add Campus form)
     Route::get('/admin/settings', [CampusController::class, 'editPage'])
         ->name('admin.settings');
-    
-    // Add this to your existing routes
-Route::get('/', function () {
-    return view('landing');
-})->name('home');
 
-// Or if you want to keep your current home route:
-Route::get('/', function () {
-    return view('landing');
-})->name('home');
-
-Route::get('/auth', function () {
-    return view('auth.login-register');
-})->name('auth.page')->middleware('guest');
 
     // Dedicated route to show the 'Add Campus' form
     Route::get('/admin/campus/create', function() {

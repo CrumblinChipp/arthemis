@@ -435,41 +435,74 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (document.getElementById("confirmSubmit")) {
         document.getElementById("confirmSubmit").onclick = () => {
+            
+            // 1. COLLECT THE CSRF TOKEN FROM THE META TAG
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            
+            // --- START FIXING THE PAYLOAD KEYS AND ADDING DATE ---
             const payload = {
-                // Using optional chaining and nullish coalescing for safer access
-                name: document.getElementById("entryName")?.value || '', 
+                name: document.getElementById("entryName")?.value || '',       // Grabs the name
                 campus_id: document.getElementById("entryCampus")?.value || '',
+                date: new Date().toISOString().slice(0, 10), // Adding required date (today's date)
                 building_id: document.getElementById("entryBuilding")?.value || '',
-                biodegradable: document.getElementById("bio")?.value || 0,
-                recyclable: document.getElementById("recyclable")?.value || 0,
-                residual: document.getElementById("residual")?.value || 0,
-                infectious: document.getElementById("infectious")?.value || 0,
-                // Assumes this is a server-side rendered token from a templating engine (e.g., Blade)
-                _token: document.querySelector('meta[name="csrf-token"]')?.content 
+                
+                // CORRECTED KEYS (must have '_kg')
+                biodegradable_kg: document.getElementById("bio")?.value || 0,
+                recyclable_kg: document.getElementById("recyclable")?.value || 0,
+                residual_kg: document.getElementById("residual")?.value || 0,
+                infectious_kg: document.getElementById("infectious")?.value || 0,
+                
+                // 🚨 REMOVE _token from the body! Laravel expects it in the header.
             };
+            // --- END FIXING THE PAYLOAD KEYS ---
             
             fetch("/waste-entry/store", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    // 2. ADD THE CSRF TOKEN TO THE HEADERS
+                    "X-CSRF-TOKEN": csrfToken, // Correct Laravel requirement
+                    "Accept": "application/json"
+                },
                 body: JSON.stringify(payload)
             })
-            .then(res => res.json())
+            .then(res => {
+                // Catch non-200 responses (like 422 for validation, or a true 500)
+                if (!res.ok) {
+                    // If it's a 422, the response should still be JSON
+                    if (res.status === 422) {
+                        return res.json().then(data => {
+                            // Display validation errors if available
+                            alert('Validation Failed: ' + Object.values(data.errors).flat().join('\n'));
+                            throw new Error("Validation failed.");
+                        });
+                    } else {
+                        // This handles a clean 500 error response without crashing
+                        throw new Error(`Server responded with status: ${res.status}`);
+                    }
+                }
+                // If res.ok is true, proceed to parse the expected JSON response
+                return res.json();
+            })
             .then(data => {
                 if (data.success) {
+                    // ... Success logic
                     confirmModal?.classList.add("hidden");
                     confirmModal?.classList.remove("flex");
                     wasteModal?.classList.add("hidden");
                     wasteModal?.classList.remove("flex");
 
                     alert("Waste entry saved to database!");
-                    location.reload(); // Added reload for dashboard data update
+                    location.reload(); 
                 } else {
-                    alert("Submission failed. Server error.");
+                    // Should be unreachable if the promise chain above is correct
+                    alert("Submission failed. Server error."); 
                 }
             })
             .catch(err => {
+                // This catches the 'Unexpected token <' (now a controlled error) and other network/parse errors
                 console.error(err);
-                alert("Submission failed.");
+                alert("Submission failed. Check console for details.");
             });
         };
     }
