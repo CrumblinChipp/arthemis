@@ -7,10 +7,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\CampusController;
 use App\Http\Controllers\WasteEntryController;
 use App\Http\Middleware\AdminVerified;
+use App\Http\Controllers\AdminAuthController;
 
-// ============================================
+//
 // PUBLIC ROUTES (No Authentication Required)
-// ============================================
+// 
 
 // Landing Page - Main Home Route
 Route::get('/', function () {
@@ -26,9 +27,13 @@ Route::get('/auth', function () {
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
-// ============================================
+// Admin Verification
+Route::post('/admin/verify', [AdminAuthController::class, 'verify'])
+    ->name('admin.verify');
+
+// 
 // PROTECTED ROUTES (Authentication Required)
-// ============================================
+// 
 
 Route::middleware(['auth'])->group(function () {
     // Dashboard
@@ -48,9 +53,9 @@ Route::middleware(['auth'])->group(function () {
     })->name('api.getBuildings');
 });
 
-// ============================================
+// 
 // ADMIN ROUTES (Admin Middleware Required)
-// ============================================
+// 
 
 Route::middleware(['auth', AdminVerified::class])->group(function () {
     // Main Settings Page (List Campuses)
@@ -71,7 +76,7 @@ Route::middleware(['auth', AdminVerified::class])->group(function () {
         ->name('admin.campus.store');
     
     // Update Campus
-    Route::put('/admin/campus/{id}', [CampusController::class, 'update'])
+    Route::put('/admin/campus/{campus}', [CampusController::class, 'update'])
         ->name('admin.campus.update');
     
     // Delete Campus

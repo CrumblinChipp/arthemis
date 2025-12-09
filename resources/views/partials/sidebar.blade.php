@@ -21,7 +21,7 @@
     <a href="#"
         data-nav="dashboard"
         class="nav-item w-full flex flex-col
-        md:flex-row items-center gap-2
+        md:flex-row items-center gap-1
         px-3 py-2 rounded-md text-gray-200
         hover:bg-green-900/30 transition">
         <span>🏠︎</span>
@@ -32,7 +32,7 @@
     <a href="#"
         data-nav="maps"
         class="nav-item w-full flex flex-col
-        md:flex-row items-center gap-2
+        md:flex-row items-center gap-1
         px-3 py-2 rounded-md text-gray-200
         hover:bg-green-900/30 transition">
         <span>⚲</span>
@@ -43,7 +43,7 @@
     <a href="#"
         data-nav="data"
         class="nav-item w-full flex flex-col
-        md:flex-row items-center gap-2
+        md:flex-row items-center gap-1
         px-3 py-2 rounded-md text-gray-200
         hover:bg-green-900/30 transition">
         <span>𝄜</span>
@@ -51,21 +51,21 @@
     </a>
 
     {{-- Admin Setting --}}
-    @if(session('admin_verified'))
+    @if(session()->has('admin_verified') && session('admin_verified') === true)
         <a href="#"
         data-nav="admin"
         class="nav-item w-full flex flex-col
-        md:flex-row items-center gap-2
+        md:flex-row items-center gap-1
         px-3 py-2 rounded-md text-gray-200
         hover:bg-green-900/30 transition">
-                <span>⚙</span>
-                <span class="hidden md:inline text-2xl">Admin Settings</span>
+            <span>⚙</span>
+            <span class="hidden md:inline text-2xl">Admin Settings</span>
         </a>
     @endif
 
 
     {{-- Desktop logout --}}
-    <div class="hidden md:block mt-auto mb-6">
+    <div class="hidden w-full md:block mt-auto mb-6">
         <a href="#" class="inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">Sign out</a>
     </div>
 

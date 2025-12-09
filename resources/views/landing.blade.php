@@ -124,6 +124,11 @@
             box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
         }
 
+        .logout-btn:hover {
+            background: #dc2626 !important;
+            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4) !important;
+        }
+
         /* Hero Content */
         .hero-content {
             max-width: 1400px;
@@ -287,6 +292,10 @@
             <li>
                 @auth
                     <a href="{{ route('dashboard') }}" class="login-btn">Dashboard</a>
+                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="login-btn logout-btn" style="background: #ef4444; margin-left: 10px;">Logout</button>
+                    </form>
                 @else
                     <a href="{{ route('auth.page') }}" class="login-btn">Login</a>
                 @endauth
