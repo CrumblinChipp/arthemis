@@ -25,6 +25,20 @@ Route::middleware([AdminVerified::class])->group(function () {
     Route::get('/admin/settings', [CampusController::class, 'editPage'])
         ->name('admin.settings');
     
+    // Add this to your existing routes
+Route::get('/', function () {
+    return view('landing');
+})->name('home');
+
+// Or if you want to keep your current home route:
+Route::get('/', function () {
+    return view('landing');
+})->name('home');
+
+Route::get('/auth', function () {
+    return view('auth.login-register');
+})->name('auth.page')->middleware('guest');
+
     // Dedicated route to show the 'Add Campus' form
     Route::get('/admin/campus/create', function() {
         return view('admin.add-campus');
