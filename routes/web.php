@@ -23,8 +23,10 @@ Route::get('/auth', function () {
     return view('auth.login-register');
 })->name('auth.page')->middleware('guest');
 
+
 // Login & Register Actions
 Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/login-register', [RegisterController::class, 'showRegistrationForm'])->name('show.auth.form');
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
 // Admin Verification

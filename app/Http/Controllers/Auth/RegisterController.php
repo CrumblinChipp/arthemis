@@ -7,9 +7,19 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Campus;
+use Carbon\Carbon;
 
 class RegisterController extends Controller
 {
+    public function showRegistrationForm()
+    {
+        // Fetch the campus data
+        $campuses = Campus::select('id', 'name')->get();
+        
+        // Ensure your actual blade file name is correct here
+        return view('auth.login-register', ['campuses' => $campuses,]);
+    }
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -18,6 +28,8 @@ class RegisterController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'terms' => 'accepted',
+            'campus_id' => 'required|integer|exists:campuses,id',
+
         ]);
 
         $user = User::create([
@@ -25,8 +37,8 @@ class RegisterController extends Controller
             'sr_code' => $validated['sr_code'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'user',
-            'campus_id' => 1,
+            'role' => $request->role ?? 'user',
+            'campus_id' => $validated['campus_id'],
         ]);
 
         Auth::login($user);

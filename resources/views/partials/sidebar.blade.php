@@ -1,5 +1,5 @@
 <aside class="
-        bg-[#0f2a1a] text-white flex items-center
+        bg-gradient-to-r from-emerald-500 to-emerald-700 text-white flex items-center
         fixed top-0 left-0 z-50
         w-full h-14
         md:flex-col md:items-center md:justify-start
@@ -64,7 +64,8 @@
     <form action="{{ route('logout') }}" method="POST" class="w-full md:w-auto">
         @csrf
         <button type="submit" class="flex items-center justify-center gap-2 w-full px-7 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm rounded-lg transition-all duration-300 hover:-translate-y-0.5 shadow-md">
-            Logout
+            <span>⏻</span>
+            <span class="hidden md:inline">Logout</span>
         </button>
     </form>
 
