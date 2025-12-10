@@ -16,7 +16,6 @@
             <div class="text-white font-semibold">ARTHEMIS</div>
         </div>
     </div>
-
     {{-- Navigation --}}
     <a href="#"
         data-nav="dashboard"
@@ -58,8 +57,15 @@
         md:flex-row items-center gap-1
         px-3 py-2 rounded-md text-gray-200
         hover:bg-green-900/30 transition">
-            <span>⚙</span>
-            <span class="hidden md:inline text-2xl">Admin Settings</span>
+        <span>⚙</span>
+        <span class="hidden md:inline text-2xl">Admin Settings</span>
         </a>
     @endif
+    <form action="{{ route('logout') }}" method="POST" class="w-full md:w-auto">
+        @csrf
+        <button type="submit" class="flex items-center justify-center gap-2 w-full px-7 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm rounded-lg transition-all duration-300 hover:-translate-y-0.5 shadow-md">
+            Logout
+        </button>
+    </form>
+
 </aside>
