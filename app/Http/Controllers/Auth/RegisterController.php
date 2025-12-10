@@ -14,11 +14,11 @@ class RegisterController extends Controller
 {
     public function showRegistrationForm()
     {
-        // Fetch the campus data
-        $campuses = Campus::select('id', 'name')->get();
+        // Fetch the campuses, just like in your DashboardController
+        $campuses = Campus::all(['id', 'name']); 
         
-        // Ensure your actual blade file name is correct here
-        return view('auth.login-register', ['campuses' => $campuses,]);
+        // Pass them to the view
+        return view('auth.login-register', compact('campuses')); // <-- Adjust view name if needed
     }
     public function register(Request $request)
     {

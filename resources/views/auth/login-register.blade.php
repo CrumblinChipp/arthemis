@@ -18,7 +18,6 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen flex items-center justify-center p-5 font-sans">
-    @dd($campuses)
     <div class="bg-white/95 rounded-[20px] shadow-2xl overflow-hidden w-full max-w-[900px] flex flex-col md:flex-row min-h-[550px]">
         
         <div class="bg-gradient-to-br from-emerald-500 to-emerald-800 p-10 md:w-1/2 flex flex-col justify-center items-center text-white text-center">

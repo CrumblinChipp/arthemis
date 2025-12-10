@@ -19,7 +19,7 @@
     <section data-section="data" class="content-section hidden">
         <h1 class="text-3xl font-bold mb-4">Data Analytics</h1>
         <div id="data-stats">
-            {{-- Data tables, charts, etc --}}
+            @include('sections.data')
         </div>
     </section>
 
