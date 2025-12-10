@@ -35,11 +35,10 @@ Route::post('/admin/verify', [AdminAuthController::class, 'verify'])
 
 
 //Data Actions
-Route::resource('data', DataController::class)->names([
-    'showData'   => 'waste.data',
-    'update'  => 'waste.update',
-    'destroy' => 'waste.destroy',
-]);
+Route::get('/data', [DataController::class, 'showData'])->name('waste.data');
+// For deleting an entry
+Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('waste.destroy');
+
 // PROTECTED ROUTES (Authentication Required)
 // 
 

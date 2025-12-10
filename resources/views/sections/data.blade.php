@@ -28,21 +28,21 @@
             </ul>
         </div>
 
-        {{-- Waste Type Filter --}}
+        {{-- wastes Type Filter --}}
         <div class="dropdown">
-            <label tabindex="0" class="btn">Waste Type Filters</label>
+            <label tabindex="0" class="btn">wastes Type Filters</label>
             <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><a href="?waste_type=residual">Residual</a></li>
-                <li><a href="?waste_type=recyclable">Recyclable</a></li>
-                <li><a href="?waste_type=biodegradable">Biodegradable</a></li>
-                <li><a href="?waste_type=infectious">Infectious</a></li>
+                <li><a href="?wastes_type=residual">Residual</a></li>
+                <li><a href="?wastes_type=recyclable">Recyclable</a></li>
+                <li><a href="?wastes_type=biodegradable">Biodegradable</a></li>
+                <li><a href="?wastes_type=infectious">Infectious</a></li>
                 <div class="divider my-0"></div>
-                <li><a href="{{ route('waste.data') }}">Show All</a></li>
+                <li><a href="{{ route('dashboard') }}">Show All</a></li>
             </ul>
         </div>
 
         {{-- Search + Date + Submit --}}
-        <form method="GET" action="{{ route('waste.data') }}" class="flex gap-2">
+        <form method="GET" action="{{ route('dashboard') }}" class="flex gap-2">
             <input type="date" id="date-filter" name="date"
                 value="{{ request('date') }}"
                 class="input input-bordered w-40" />
@@ -53,8 +53,8 @@
 
             <button type="submit" class="btn btn-ghost">Apply</button>
 
-            @if (request()->hasAny(['search', 'date', 'waste_type']))
-                <a href="{{ route('waste.data') }}" class="btn btn-ghost">Clear</a>
+            @if (request()->hasAny(['search', 'date', 'wastes_type']))
+                <a href="{{ route('dashboard') }}" class="btn btn-ghost">Clear</a>
             @endif
         </form>
     </div>
@@ -66,40 +66,36 @@
     <table class="table table-zebra w-full">
         <thead>
             <tr>
-                <th><input type="checkbox" class="checkbox" /></th>
-                <th>Date</th>
-                <th>Building</th>
+                <td><input type="checkbox" class="checkbox" /></td>
+                <td>{{ Carbon\Carbon::parse($wastes->date)->format('M d, Y') }}</td>
+                <td>{{ $wastes->building->name }}</td>
 
-                <th class="text-center col-residual">Residual (kg)</th>
-                <th class="text-center col-recyclable">Recyclable (kg)</th>
-                <th class="text-center col-biodegradable">Biodegradable (kg)</th>
-                <th class="text-center col-infectious">Infectious (kg)</th>
+                <td class="text-center col-residual">{{ number_format($wastes->residual, 2) }}</td>
+                <td class="text-center col-recyclable">{{ number_format($wastes->recyclable, 2) }}</td>
+                <td class="text-center col-biodegradable">{{ number_format($wastes->biodegradable, 2) }}</td>
+                <td class="text-center col-infectious">{{ number_format($wastes->infectious, 2) }}</td>
+                <td class="text-center font-bold col-total">{{ number_format($totalWeight, 2) }}</td>
 
-                <th class="text-center font-bold col-total">Total (kg)</th>
-                <th class="text-right">Delete</th>
+                {{-- BIG X DELETE BUTTON --}}
+                <td class="text-right">
+                                        </td>
             </tr>
         </thead>
 
         <tbody>
             @foreach ($wastes as $waste)
-                @php
-                    $totalWeight =
-                        $waste->residual_kg +
-                        $waste->recyclable_kg +
-                        $waste->biodegradable_kg +
-                        $waste->infectious_kg;
-                @endphp
-
+            @php
+                $totalWeight =
+                    $waste->residual +
+                    $waste->recyclable +
+                    $waste->biodegradable +
+                    $waste->infectious;
+            @endphp
                 <tr>
-                    <td><input type="checkbox" class="checkbox" /></td>
-                    <td>{{ \Carbon\Carbon::parse($waste->date)->format('m-d-y') }}</td>
-                    <td>{{ $waste->building->name ?? 'N/A' }}</td>
-
-                    <td class="text-center col-residual">{{ number_format($waste->residual_kg, 2) }}</td>
-                    <td class="text-center col-recyclable">{{ number_format($waste->recyclable_kg, 2) }}</td>
-                    <td class="text-center col-biodegradable">{{ number_format($waste->biodegradable_kg, 2) }}</td>
-                    <td class="text-center col-infectious">{{ number_format($waste->infectious_kg, 2) }}</td>
-
+                    <td class="text-center col-residual">{{ number_format($waste->residual, 2) }}</td>
+                    <td class="text-center col-recyclable">{{ number_format($waste->recyclable, 2) }}</td>
+                    <td class="text-center col-biodegradable">{{ number_format($waste->biodegradable, 2) }}</td>
+                    <td class="text-center col-infectious">{{ number_format($waste->infectious, 2) }}</td>
                     <td class="text-center font-bold col-total">{{ number_format($totalWeight, 2) }}</td>
 
                     {{-- BIG X DELETE BUTTON --}}
@@ -125,7 +121,7 @@
 <div class="flex justify-between items-center mt-4 text-sm text-gray-600">
     <div>
         Rows per page:
-        <form method="GET" action="{{ route('waste.data') }}" class="inline-block">
+        <form method="GET" action="{{ route('dashboard') }}" class="inline-block">
             <input type="hidden" name="search" value="{{ request('search') }}">
             <input type="hidden" name="date" value="{{ request('date') }}">
             <select name="per_page" onchange="this.form.submit()"

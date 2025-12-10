@@ -538,5 +538,4 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => console.error("Error fetching buildings:", err));
     });
-
 });

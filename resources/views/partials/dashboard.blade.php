@@ -11,7 +11,7 @@
     <section data-section="maps" class="content-section hidden">
         <h1 class="text-3xl font-bold mb-4">Maps</h1>
         <div id="maps-area">
-             {{-- Map embed/code goes here --}}
+            {{-- Maps Content --}}
         </div>
     </section>
 
@@ -37,7 +37,6 @@
             buildingDatasets: @json($buildingDatasets),
             composition: @json(array_values($composition))
         };
-    <!-- In the sidebar, find the navigation links and update them: -->
     </script>
 
 @endsection
