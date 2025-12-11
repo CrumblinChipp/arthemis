@@ -143,8 +143,11 @@
                             </select>
                         </div>
                     </div>
+<<<<<<< HEAD
+=======
             </div>
 
+>>>>>>> 9f76bccaaadd3a24cfe9fa9c0ea11953c3c5064c
                     <div class="mt-4 flex items-start gap-2 text-xs text-gray-600">
                         <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">I agree to the Terms & Conditions</label>
@@ -153,6 +156,10 @@
                     <button type="submit" class="mt-4 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
                         Create Account
                     </button>
+            </div>
+
+
+                    
                 </form>
 
                 <div class="text-center mt-6 text-sm text-gray-500">
@@ -160,7 +167,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    
 
     <script>
         function switchTab(tab) {
