@@ -130,25 +130,20 @@
                         </div>
                         
                         <div>
-                            <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Campus</label>
-                            <select name="campus_id" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none bg-white">
-                                <option value="">Select Campus</option>
-                                @if (isset($campuses))
-                                    @foreach ($campuses as $campus)
-                                        <option value="{{ $campus->id }}" {{ old('campus_id') == $campus->id ? 'selected' : '' }}>
-                                            {{ $campus->name }}
-                                        </option>
-                                    @endforeach
-                                @endif
-                            </select>
+                                <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Campus</label>
+                                <select name="campus_id" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none bg-white">
+                                    <option value="">Select Campus</option>
+                                    @if (isset($campuses))
+                                        @foreach ($campuses as $campus)
+                                            <option value="{{ $campus->id }}" {{ old('campus_id') == $campus->id ? 'selected' : '' }}>
+                                                {{ $campus->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
                         </div>
                     </div>
-<<<<<<< HEAD
-=======
-            </div>
-
->>>>>>> 9f76bccaaadd3a24cfe9fa9c0ea11953c3c5064c
-                    <div class="mt-4 flex items-start gap-2 text-xs text-gray-600">
+                        <div class="mt-4 flex items-start gap-2 text-xs text-gray-600">
                         <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">I agree to the Terms & Conditions</label>
                     </div>
@@ -156,8 +151,8 @@
                     <button type="submit" class="mt-4 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
                         Create Account
                     </button>
-            </div>
 
+            </div>
 
                     
                 </form>
@@ -167,7 +162,7 @@
                 </div>
             </div>
         </div>
-    
+    </div>
 
     <script>
         function switchTab(tab) {
