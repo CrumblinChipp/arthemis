@@ -37,7 +37,7 @@
                 <p class="text-sm text-gray-600 mb-2">Current map uploaded: <a href="{{ Storage::url($campus->map) }}" target="_blank" class="text-indigo-500 hover:underline">View Map</a></p>
             @endif
             <input type="file" id="map" name="map"
-                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-500 file:text-white hover:file:bg-emerald-700">
             <p class="text-xs text-gray-500 mt-1">Max 2MB. Only update to change the current map.</p>
         </div>
 
@@ -61,7 +61,7 @@
 
         {{-- Submit Button --}}
         <div class="flex items-center justify-start">
-            <button type="submit" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            <button type="submit" class="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 Update Campus
             </button>
         </div>

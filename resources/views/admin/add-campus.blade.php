@@ -26,7 +26,7 @@
         <div class="mb-4">
             <label for="campus_map" class="block text-gray-700 font-bold mb-2">Campus Map (Optional)</label>
             <input type="file" id="campus_map" name="campus_map"
-                  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                  class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-500 file:text-white hover:file:bg-emerald-700">
             <p class="text-xs text-gray-500 mt-1">Max 2MB. Image format.</p>
         </div>
 
@@ -48,7 +48,7 @@
 
         {{-- Submit Button --}}
         <div class="flex items-center justify-between">
-            <button type="submit" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            <button type="submit" class="bg-emerald-500 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 Save Campus
             </button>
         </div>
