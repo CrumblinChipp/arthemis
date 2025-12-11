@@ -15,7 +15,7 @@ class User extends Authenticatable
         'sr_code',
         'email',
         'password',
-        'role',        // ← Make sure this is here
+        'role',
         'campus_id',
     ];
 

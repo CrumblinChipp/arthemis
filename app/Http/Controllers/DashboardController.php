@@ -39,7 +39,6 @@ class DashboardController extends Controller
          * 2. GET BUILDINGS OF SELECTED CAMPUS
          * --------------------------------------------------- */
 
-        // Use the $buildings collection from step 1 to avoid redundant query
         $buildingIds = $buildings->pluck('id');
 
 
@@ -130,7 +129,6 @@ class DashboardController extends Controller
             foreach ($dates as $d) {
                 $dailyTotals[] = WasteEntry::where('building_id', $building->id)
                     ->where('date', $d)
-                    // ADJUSTMENT: Use  suffixes
                     ->selectRaw('SUM(residual + recyclable + biodegradable + infectious) AS total')
                     ->value('total') ?? 0;
             }
@@ -146,10 +144,8 @@ class DashboardController extends Controller
          * --------------------------------------------------- */
         $query = WasteEntry::query()->with('building');
 
-        // Search by Building Name
         if ($request->search) {
             $query->whereHas('building', function ($q) use ($request) {
-                // Assuming the Building model has a 'name' column
                 $q->where('name', 'like', '%' . $request->search . '%');
             });
         }
@@ -170,7 +166,7 @@ class DashboardController extends Controller
         $validPerPages = [20, 50, 100];
         $perPage = (int)$request->input('per_page', 20);
         if (!in_array($perPage, $validPerPages)) {
-            $perPage = 20; // Default if invalid value passed
+            $perPage = 20;
         }
 
 
@@ -205,60 +201,25 @@ class DashboardController extends Controller
         ]);
     }
 
-// ... inside App\Http\Controllers\DashboardController
-
-// ... (Your existing index method ends here) ...
-
-
 /* -----------------------------------------------------
  * API METHODS FOR MARKER CRUD
  * --------------------------------------------------- */
     public function updateBuildingCoordinates(Request $request, $buildingId)
     {
-        // 1. Find the existing building
         $building = Building::findOrFail($buildingId);
 
-        // 2. Validate the incoming coordinates
-        // CHANGE 'required' to 'nullable' so you can clear the marker
         $validated = $request->validate([
             'map_x_percent' => 'nullable|numeric|between:0,100', 
             'map_y_percent' => 'nullable|numeric|between:0,100',
             '_method' => 'required|in:PUT', 
         ]);
         
-        // 3. Update only the coordinate fields
         $building->update([
             'map_x_percent' => $validated['map_x_percent'],
             'map_y_percent' => $validated['map_y_percent'],
         ]);
 
-        // 4. Return the updated building data
         return response()->json($building);
     }
 
-public function showCampusMapViewer()
-{
-    // 1. Fetch the relevant map record (assuming there's a key/ID for the campus map)
-    // You might need to adjust the query below if you have multiple maps. 
-    // For now, we'll fetch the first one or a known ID (e.g., ID 1).
-    $campusMap = Map::find(1); // Adjust '1' to your actual map ID if needed
-
-    if (!$campusMap) {
-        // Handle case where map is not found
-        abort(404, 'Campus map not found.');
-    }
-    
-    // 2. Fetch all buildings with coordinates
-    $buildings = Building::whereNotNull('map_x_percent')
-                         ->whereNotNull('map_y_percent')
-                         ->get(['name', 'map_x_percent', 'map_y_percent']);
-
-    // 3. Convert the internal storage path to a public URL
-    // The path 'storage/public/maps/image.jpg' becomes a URL like '/storage/maps/image.jpg' 
-    // thanks to the 'php artisan storage:link' setup.
-    $imageUrl = asset('storage/' . $campusMap->map_path); // Use the asset helper for the public URL
-
-    // 4. Pass the data to the view
-    return view('dashboard.campus-map-viewer', compact('buildings', 'imageUrl'));
-}
 }

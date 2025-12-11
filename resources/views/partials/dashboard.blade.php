@@ -1,4 +1,4 @@
-@extends('layouts.app') {{-- Extends the new main layout --}}
+@extends('layouts.app')
 
 @section('content')
 
@@ -24,11 +24,9 @@
 
     {{-- Admin Content --}}
     <section data-section="admin" class="content-section hidden">
-        {{-- Include the admin settings content here --}}
         @include('sections.admin-settings')
     </section>
 
-    {{-- The JS data block for the charts must be kept on the page that extends the layout, before the main JS file. --}}
     <script>
         window.dashboardData = {
             labels: @json($labels),

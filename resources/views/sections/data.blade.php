@@ -5,8 +5,8 @@
         <thead>
             <tr>
                 <th><input type="checkbox" class="checkbox" /></th>
-                <th>Date</th>               {{-- ADDED BACK --}}
-                <th>Building</th>           {{-- ADDED BACK --}}
+                <th>Date</th>
+                <th>Building</th>
 
                 <th class="text-center col-residual">Residual (kg)</th>
                 <th class="text-center col-recyclable">Recyclable (kg)</th>
@@ -28,9 +28,9 @@
                     $waste->infectious;
             @endphp
                 <tr>
-                    <td><input type="checkbox" class="checkbox" /></td>  {{-- Checkbox --}}
-                    <td>{{ Carbon\Carbon::parse($waste->date)->format('M d, Y') }}</td> {{-- ADDED Date--}}
-                    <td>{{ $waste->building->name }}</td> {{-- ADDED Building Name --}}
+                    <td><input type="checkbox" class="checkbox" /></td>
+                    <td>{{ Carbon\Carbon::parse($waste->date)->format('M d, Y') }}</td>
+                    <td>{{ $waste->building->name }}</td>
 
                     <td class="text-center col-residual">{{ number_format($waste->residual, 2) }}</td>
                     <td class="text-center col-recyclable">{{ number_format($waste->recyclable, 2) }}</td>
@@ -38,7 +38,6 @@
                     <td class="text-center col-infectious">{{ number_format($waste->infectious, 2) }}</td>
                     <td class="text-center font-bold col-total">{{ number_format($totalWeight, 2) }}</td>
 
-                    {{-- BIG X DELETE BUTTON --}}
                     <td class="text-right">
                         <form method="POST" action="{{ route('waste.destroy', $waste) }}">
                             @csrf
@@ -46,7 +45,7 @@
                             <button type="submit"
                                 onclick="return confirm('Delete this entry?')"
                                 class="text-red-600 text-xl font-bold hover:text-red-800">
-                                ✕
+                                🗑
                             </button>
                         </form>
                     </td>

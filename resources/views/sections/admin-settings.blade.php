@@ -10,7 +10,7 @@
 
         <button data-admin-page="add-campus"
                 class="admin-nav-item p-4 text-left hover:bg-green-900/20 border-b">
-            + Add Campus
+            Add Campus
         </button>
 
         <button data-admin-page="edit-campus"
@@ -20,7 +20,7 @@
 
         <button data-admin-page="edit-building"
                 class="admin-nav-item p-4 text-left hover:bg-green-900/20 border-b">
-            Edit Building
+            Edit Map Marker
         </button>
     </div>
 
@@ -37,12 +37,12 @@
                 @include('admin.add-campus')
             </div>
 
-            {{-- 2. EDIT CAMPUS (or the list of campuses to edit) --}}
+            {{-- 2. EDIT CAMPUS --}}
             <div id="edit-campus" class="admin-page hidden">
                 @include('admin.edit-campus')
             </div>
 
-            {{-- 3. EDIT BUILDING --}}
+            {{-- 3. EDIT MAP MARKER --}}
             <div id="edit-building" class="admin-page hidden">
                 @include('admin.edit-map')
             </div>

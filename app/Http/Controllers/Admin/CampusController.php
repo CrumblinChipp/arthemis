@@ -42,6 +42,7 @@ class CampusController extends Controller
             ]);
         }
 
+        // Return Campus Data
         return response()->json([
             'success' => true,
             'message' => 'Campus and buildings added successfully.',
@@ -52,7 +53,6 @@ class CampusController extends Controller
     public function editPage($id)
     {
         $campus = Campus::with('buildings')->findOrFail($id);
-        // Note: Assuming the view is located at resources/views/admin/edit-campus.blade.php
         return view('admin.edit-campus', compact('campus'));
     }
 
@@ -63,7 +63,6 @@ class CampusController extends Controller
                 'required',
                 'string',
                 'max:255',
-                // Use Rule::unique to ignore the current record cleanly
                 Rule::unique('campuses', 'name')->ignore($campus->id),
             ],
             'buildings' => 'required|array|min:1',
@@ -71,7 +70,7 @@ class CampusController extends Controller
             'campus_map' => 'nullable|image|max:2048',
         ]);
 
-        // 2. Handle Campus Data and Map
+        // 1. Handle Campus Data and Map
         $campus->name = $validated['campus_name'];
 
     if ($request->hasFile('campus_map')) {
@@ -82,7 +81,7 @@ class CampusController extends Controller
             
         $campus->save();
 
-        // 3. Handle Buildings (CRUD)
+        // 2. Handle Buildings (CRUD)
         if ($request->has('buildings')) {
             $submittedBuildings = $validated['buildings'];
             $existingBuildingIds = $campus->buildings->pluck('id')->toArray();
@@ -118,41 +117,24 @@ class CampusController extends Controller
         return redirect()->back()->with('success', 'Campus updated successfully!');
     }
 
-    /**
-     * Remove the specified resource (Campus) from storage, including related data.
-     *
-     * @param  \App\Models\Campus  $campus (Route Model Binding)
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function destroy(Campus $campus)
     {
         try {
             DB::beginTransaction();
-
-            // 1. Delete associated map file
             if ($campus->map) {
                 Storage::disk('public')->delete($campus->map);
             }
-            
-            // 2. Delete the Campus and related data
-            // NOTE: If you have configured onDelete('cascade') in your migrations, 
-            // deleting the campus will automatically delete its Buildings and associated Waste Entries.
-            // Otherwise, you must uncomment these lines:
-            // $campus->buildings()->delete();
-            // $campus->wasteEntries()->delete();
-            
+        
             $campus->delete();
 
             DB::commit();
 
-            // Assuming you have an admin index/list route named 'admin.campus.index' or similar
             return redirect()->route('dashboard')
                             ->with('success', 'Campus "' . $campus->name . '" deleted permanently.');
 
         } catch (\Exception $e) {
             DB::rollBack();
             
-            // Handle errors, possibly log the exception
             return redirect()->back()
                             ->with('error', 'Error deleting campus: ' . $e->getMessage());
         }

@@ -19,7 +19,6 @@ class WasteEntry extends Model
 
     public $timestamps = false;
 
-    // Relationships
     public function building()
     {
         return $this->belongsTo(Building::class);

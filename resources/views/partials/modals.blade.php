@@ -7,7 +7,7 @@
           placeholder="Enter admin password">
 
       <button onclick="verifyAdmin()"
-          class="bg-blue-600 w-full text-white py-2 rounded-md">
+          class="bg-emerald-500 w-full text-white py-2 rounded-md hover:bg-emerald-700">
           Verify
       </button>
 

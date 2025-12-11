@@ -7,7 +7,6 @@
     <title>ARTHEMIS - Login & Register</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom animation for tab switching */
         .fade-in {
             animation: fadeIn 0.5s ease;
         }
@@ -17,16 +16,20 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen flex items-center justify-center p-5 font-sans">
-    <div class="bg-white/95 rounded-[20px] shadow-2xl overflow-hidden w-full max-w-[900px] flex flex-col md:flex-row min-h-[550px]">
+<body class="bg-gradient-to-br from-[#0f2027] via-[#203a43] 
+    to-[#2c5364] min-h-screen flex items-center justify-center p-5 font-sans">
+    <div class="bg-white/95 rounded-[20px] shadow-2xl overflow-hidden w-full max-w-[900px] 
+                flex flex-col md:flex-row min-h-[550px]">
         
-        <div class="bg-gradient-to-br from-emerald-500 to-emerald-800 p-10 md:w-1/2 flex flex-col justify-center items-center text-white text-center">
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-800 p-10 md:w-1/2 flex flex-col 
+                    justify-center items-center text-white text-center">
             <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-[3px] mb-5">Arthemis</h1>
             <p class="text-lg opacity-90 leading-relaxed">
                 Welcome to our platform. Join us today and experience excellence in every interaction.
             </p>
             <div class="mt-8">
-                <a href="{{ route('home') }}" class="text-emerald-100 hover:text-white font-semibold flex items-center gap-2 transition-colors">
+                <a href="{{ route('home') }}" class="text-emerald-100 hover:text-white 
+                                                    font-semibold flex items-center gap-2 transition-colors">
                     ← Back to Home
                 </a>
             </div>
@@ -38,7 +41,8 @@
                 <div id="tab-login" onclick="switchTab('login')" class="pb-2 cursor-pointer font-semibold transition-all border-b-4 border-emerald-500 text-emerald-600">
                     Login
                 </div>
-                <div id="tab-register" onclick="switchTab('register')" class="pb-2 cursor-pointer font-semibold transition-all border-b-4 border-transparent text-gray-400 hover:text-emerald-500">
+                <div id="tab-register" onclick="switchTab('register')" class="pb-2 cursor-pointer font-semibold transition-all 
+                                                                        border-b-4 border-transparent text-gray-400 hover:text-emerald-500">
                     Register
                 </div>
             </div>
@@ -62,13 +66,15 @@
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
                         <input type="email" name="email" required placeholder="your@email.com" value="{{ old('email') }}" 
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:outline-none 
+                            focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
                     </div>
 
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-700">Password</label>
                         <input type="password" name="password" required placeholder="Enter password"
-                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:outline-none 
+                            focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
                     </div>
 
                     <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -76,7 +82,8 @@
                         <label for="remember">Remember me</label>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all active:translate-y-0">
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 
+                                            text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all active:translate-y-0">
                         Login
                     </button>
                 </form>
@@ -148,7 +155,8 @@
                         <label for="terms">I agree to the Terms & Conditions</label>
                     </div>
 
-                    <button type="submit" class="mt-4 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
+                    <button type="submit" class="mt-4 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold 
+                                            rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
                         Create Account
                     </button>
 

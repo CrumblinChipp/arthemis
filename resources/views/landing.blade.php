@@ -7,19 +7,16 @@
     <title>ARTHEMIS - Waste Management Solution</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom Styles for animations and non-utility features */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow-x: hidden;
         }
 
-        /* Hero Background with asset URL for Blade */
         .hero {
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
                         url('{{ asset('images/background-landing.png') }}') center/cover no-repeat;
         }
 
-        /* Keyframes for animations */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
@@ -34,7 +31,6 @@
             60% { transform: translateX(-50%) translateY(-5px); }
         }
 
-        /* Apply custom animations via utility classes in HTML where possible */
         .animate-float-8s { animation: float 8s ease-in-out infinite; }
         .animate-float-9s { animation: float 9s ease-in-out infinite 1s; }
         .animate-float-10s { animation: float 10s ease-in-out infinite 2s; }
@@ -43,13 +39,11 @@
         .animate-fadeInUp-1_2s { animation: fadeInUp 1.2s ease; }
         .animate-bounce-2s { animation: bounce 2s infinite; }
 
-        /* Custom Logo Icon */
         .logo::before {
             content: '🌿';
             font-size: 28px;
         }
 
-        /* Tab Underline hover effect (requires custom CSS due to dynamic width) */
         .nav-link-underline::after {
             content: '';
             position: absolute;
@@ -151,11 +145,9 @@
         const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
-                // Tailwind classes for scrolled state: darker background, less padding, subtle shadow
                 navbar.classList.add('bg-black/95', 'py-4', 'shadow-xl');
                 navbar.classList.remove('bg-black/30', 'py-5');
             } else {
-                // Tailwind classes for initial state
                 navbar.classList.remove('bg-black/95', 'py-4', 'shadow-xl');
                 navbar.classList.add('bg-black/30', 'py-5');
             }
@@ -165,11 +157,9 @@
         function toggleMenu() {
             const navLinks = document.getElementById('navLinks');
             
-            // Toggle visibility using Tailwind responsive classes
             if (navLinks.classList.contains('hidden') || navLinks.classList.contains('md:hidden')) {
                 navLinks.classList.remove('hidden', 'md:hidden');
                 navLinks.classList.add('flex', 'fixed', 'top-[70px]', 'left-0', 'flex-col', 'p-10', 'bg-black/95', 'shadow-2xl');
-                // You might need a slight delay or a custom class for smoother mobile transition if 'left-0' transition isn't working natively with utility classes.
                 navLinks.style.left = '0'; 
             } else {
                 navLinks.classList.add('hidden', 'md:hidden');
@@ -178,7 +168,6 @@
             }
         }
         
-        // Handle closing the mobile menu after navigation on small screens
         document.querySelectorAll('#navLinks a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -188,7 +177,6 @@
                         behavior: 'smooth'
                     });
                 }
-                // Close mobile menu
                 if (window.innerWidth < 768) {
                     const navLinks = document.getElementById('navLinks');
                     navLinks.classList.add('hidden', 'md:hidden');
@@ -198,7 +186,6 @@
             });
         });
         
-        // Contact button scroll
         function scrollToContact() {
             alert('Contact form coming soon!');
         }

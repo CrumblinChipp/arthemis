@@ -19,6 +19,9 @@ Route::get('/', function () {
     return view('landing');
 })->name('home');
 
+// Admin Verification
+Route::post('/admin/verify', [AdminAuthController::class, 'verify']);
+
 // Auth Page (Login/Register) - Only for guests
 Route::get('/auth', [RegisterController::class, 'showRegistrationForm'])
     ->middleware('guest')

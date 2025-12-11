@@ -61,9 +61,7 @@
                         
                         {{-- Loop over buildings that DON'T have coordinates yet --}}
                         @foreach($buildings as $building)
-                            @if(!isset($building->map_x_percent) || !isset($building->map_y_percent))
-                                <option value="{{ $building->id }}">{{ $building->name }}</option>
-                            @endif
+                            <option value="{{ $building->id }}">{{ $building->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -116,10 +114,9 @@
         const instruction = document.getElementById('instruction');
 
         // State Variables
-        let currentMarkerElement = null; // Temporary marker being placed or edited
-        let selectedMarkerElement = null; // Permanent marker being edited
+        let currentMarkerElement = null;
+        let selectedMarkerElement = null;
 
-        // Get CSRF Token
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
 
@@ -172,7 +169,7 @@
                 marker.dataset.xPercent = xPercent;
                 marker.dataset.yPercent = yPercent;
                 marker.classList.add('permanent-marker');
-                marker.classList.add('group'); // For hover label
+                marker.classList.add('group');
                 
                 const label = document.createElement('span');
                 label.textContent = name;
@@ -194,7 +191,6 @@
         campusMap.addEventListener('click', (event) => {
               const targetBuildingId = buildingIdInput.value;
 
-            // Only allow map interaction if a building is selected for marking/editing
             if (!targetBuildingId) {
                     alert('Please select a building to mark, or click an existing marker to edit.');
                     return;
@@ -250,7 +246,6 @@
             const selectedId = buildingSelect.value;
 
             if (!selectedId) {
-                // If the selected value is null/empty (e.g., they chose the 'Select a building' option)
                 return; 
             }
 
@@ -268,7 +263,7 @@
             if (markerEl) {
                 // Prevent the map click listener from firing immediately after selecting
                 event.stopPropagation(); 
-                resetFormState(); // Clear any existing selection/placement
+                resetFormState();
 
                 const id = markerEl.dataset.buildingId;
                 const name = markerEl.dataset.name;
@@ -277,7 +272,7 @@
 
                 // Set State
                 buildingIdInput.value = id;
-                markerXInput.value = x; // Retain existing coords in input
+                markerXInput.value = x; 
                 markerYInput.value = y;
                 selectedMarkerElement = markerEl; 
                 buildingSelect.disabled = true;
@@ -285,7 +280,7 @@
                 // UI Update
                 formTitle.textContent = `Editing: ${name}`;
                 saveButton.textContent = 'Update Marker Position';
-                saveButton.disabled = true; // Disabled until map is clicked to move it
+                saveButton.disabled = true;
                 deleteButton.classList.remove('hidden');
                 cancelButton.classList.remove('hidden');
                 instruction.innerHTML = `To move **${name}**, click a new location on the map.`;
@@ -331,12 +326,12 @@
                 
                 if (!response.ok) throw new Error('Delete location failed.');
 
-                // Successful Deletion (Location cleared)
+                // Successful Deletion
                 if (selectedMarkerElement) {
-                    selectedMarkerElement.remove(); // Remove from the DOM
+                    selectedMarkerElement.remove();
                 }
                 
-                // Add the building back to the select dropdown (since it's now unmarked)
+                // Add the building back to the select dropdown
                 const option = new Option(name, id);
                 buildingSelect.appendChild(option);
 
@@ -369,7 +364,7 @@
             
             const url = `/buildings/${buildingId}/coordinates`;
 
-            // --- CALL: POST (with _method: PUT) ---
+            // --- CALL: POST ---
             try {
                 console.log(`UPDATE request to ${url} with data:`, markerData);
                 
@@ -396,7 +391,7 @@
                     currentMarkerElement.remove();
                 }
 
-                // 2. Remove the building from the select dropdown (since it's now marked)
+                // 2. Remove the building from the select dropdown
                 document.querySelector(`#building-select option[value="${buildingId}"]`)?.remove();
                 
                 // 3. Render the new permanent marker
@@ -418,7 +413,6 @@
             }
         });
 
-        // Initialize on page load
         resetFormState(); 
     });
 </script>

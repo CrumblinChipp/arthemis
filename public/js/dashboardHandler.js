@@ -10,13 +10,11 @@ window.closeAdminModal = function() {
     document.getElementById("adminError")?.classList.add("hidden");
 };
 window.verifyAdmin = function() {
-    // Your existing verifyAdmin logic...
     const pass = document.getElementById("adminPassword").value;
     fetch("/admin/verify", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            // Use optional chaining (?) for robustness
             "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
         },
         body: JSON.stringify({ password: pass })
@@ -34,12 +32,10 @@ window.verifyAdmin = function() {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    // const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content'); // Unused local const
 
     /* -------------------------------------------------------
      * 1. FETCH SERVER-PASSED DATA
      * ----------------------------------------------------- */
-    // Use optional chaining for safer access
     const labels = window.dashboardData?.labels || [];
     const totals = window.dashboardData?.totals || [];
     const buildingDatasets = window.dashboardData?.buildingDatasets || [];
@@ -49,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
         '#9966FF', '#FF9F40', '#8cff40ff', '#7074efff'
     ];
     
-    // Formatting labels (dates)
     const formattedLabels = labels.map(l => {
         try {
             const d = new Date(l);
@@ -73,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const ctxLine = lineCanvas.getContext("2d");
 
-        lineChartInstance = new Chart(ctxLine, { // Store new instance
+        lineChartInstance = new Chart(ctxLine, { 
             type: "line",
             data: {
                 labels: formattedLabels,
@@ -106,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const donutCtx = donutCanvas.getContext("2d");
 
-        donutChartInstance = new Chart(donutCtx, { // Store new instance
+        donutChartInstance = new Chart(donutCtx, {
             type: "doughnut",
             data: {
                 labels: ["Biodegradable", "Residual", "Recyclable", "Infectious"],
@@ -154,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
      * ----------------------------------------------------- */
 
     const datasets = buildingDatasets.map((b, index) => ({
-        label: b.name, // Added label for context
+        label: b.name,
         data: b.totals,
         borderWidth: 2,
         borderColor: colors[index % colors.length],
@@ -167,22 +162,21 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const buildingCanvas = document.getElementById("buildingLineChart");
     if (buildingCanvas) {
-        // Destroy existing chart instance if it exists to fix 'Canvas is already in use' error
         if (buildingLineChartInstance) {
             buildingLineChartInstance.destroy();
         }
 
-        buildingLineChartInstance = new Chart(buildingCanvas, { // Store new instance
+        buildingLineChartInstance = new Chart(buildingCanvas, { 
             type: 'line',
             data: {
-                labels: formattedLabels, // your formatted dates
+                labels: formattedLabels,
                 datasets: datasets
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false } // hide Chart.js legend
+                    legend: { display: false }
                 }
             }
         });
@@ -192,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Render separate summary labels
     const summaryContainer = document.getElementById("perBuildingSummary");
     if (summaryContainer) {
-        summaryContainer.innerHTML = ""; // clear existing content
+        summaryContainer.innerHTML = "";
 
         buildingDatasets.forEach((b, i) => {
             const total = buildingTotals[i];
@@ -211,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Text
             const text = document.createElement("span");
             text.textContent = `${b.name}: ${total} kg`;
-            text.classList.add("text-sm", "font-medium", "text-gray-800"); // ensure visible text
+            text.classList.add("text-sm", "font-medium", "text-gray-800"); 
 
             labelDiv.appendChild(marker);
             labelDiv.appendChild(text);
@@ -252,15 +246,15 @@ document.addEventListener("DOMContentLoaded", () => {
     /* -------------------------------------------------------
      * 6. ADMIN MODAL
      * ----------------------------------------------------- */
-    // OPEN MODAL
+    // Open Modal
     document.getElementById("openAdminModal")?.addEventListener("click", () => {
         document.getElementById("adminModal")?.classList.remove("hidden");
     }); 
     
-    // CLICK OUTSIDE TO CLOSE
+    // Click outsdie to close
     document.getElementById("adminModal")?.addEventListener("click", (e) => {
         if (e.target === e.currentTarget) {
-            window.closeAdminModal(); // Use the global function
+            window.closeAdminModal();
         }
     });
     
@@ -297,7 +291,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Function to show one admin page and highlight the active button
     function showAdminPage(pageId) {
         // Hide all pages
         adminPages.forEach(p => p.classList.add("hidden"));
@@ -306,7 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
         adminNavItems.forEach(btn => btn.classList.remove("bg-green-900", "text-green-400"));
 
         // Show the selected page
-        const page = document.getElementById(pageId); // match ID
+        const page = document.getElementById(pageId); 
         if (page) page.classList.remove("hidden");
 
         // Highlight the clicked button
@@ -315,8 +308,8 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Call initialization functions when a section is opened
         if (pageId === 'add-campus') {
-            initAddBuildingButton(); // Initialize building buttons
-            initAddCampusSubmit(); // Initialize form submission
+            initAddBuildingButton();
+            initAddCampusSubmit();
         }
     }
 
@@ -325,7 +318,6 @@ document.addEventListener("DOMContentLoaded", () => {
      * ----------------------------------------------------- */
     function initAddBuildingButton() {
         const addBuildingBtn = document.getElementById('add-building-btn');
-        // Check for null and if button is already bound to prevent multiple event listeners
         if (!addBuildingBtn || addBuildingBtn.dataset.bound === "true") return; 
         
         const buildingsWrapper = document.getElementById('building-wrapper');
@@ -339,10 +331,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     placeholder="Enter building name" required>
                 <button type="button" class="ml-2 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 remove-building-btn">×</button>
             `;
-            buildingsWrapper?.appendChild(div); // Use optional chaining
+            buildingsWrapper?.appendChild(div);
         });
 
-        // Event delegation for remove button (it was already correctly using delegation)
         document.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-building-btn')) {
             e.target.closest('.building-item')?.remove();
@@ -358,9 +349,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const form = document.getElementById("add-campus-form");
 
         if (!form || form.dataset.bound === "true") return;
-        
-        // Define the route here if it's available globally via the window object, 
-        // OR define it in the Blade file as a global JS variable.
         const campusRoute = window.addCampusRoute; 
 
         form.addEventListener("submit", function(e) {
@@ -368,10 +356,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const formData = new FormData(form);
 
-            fetch(campusRoute, { // Using the locally scoped 'campusRoute'
+            fetch(campusRoute, {
                 method: "POST",
                 headers: {
-                    // Use optional chaining (?) for robustness
                     "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')?.content
                 },
                 body: formData
@@ -436,40 +423,32 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("confirmSubmit")) {
         document.getElementById("confirmSubmit").onclick = () => {
             
-            // 1. COLLECT THE CSRF TOKEN FROM THE META TAG
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
             
-            // --- START FIXING THE PAYLOAD KEYS AND ADDING DATE ---
             const payload = {
-                name: document.getElementById("entryName")?.value || '',       // Grabs the name
+                name: document.getElementById("entryName")?.value || '',
                 campus_id: document.getElementById("entryCampus")?.value || '',
-                date: new Date().toISOString().slice(0, 10), // Adding required date (today's date)
+                date: new Date().toISOString().slice(0, 10),
                 building_id: document.getElementById("entryBuilding")?.value || '',
                 
-                // CORRECTED KEYS (must have '_kg')
                 biodegradable_kg: document.getElementById("bio")?.value || 0,
                 recyclable_kg: document.getElementById("recyclable")?.value || 0,
                 residual_kg: document.getElementById("residual")?.value || 0,
                 infectious_kg: document.getElementById("infectious")?.value || 0,
                 
-                // 🚨 REMOVE _token from the body! Laravel expects it in the header.
             };
-            // --- END FIXING THE PAYLOAD KEYS ---
             
             fetch("/waste-entry/store", {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
-                    // 2. ADD THE CSRF TOKEN TO THE HEADERS
-                    "X-CSRF-TOKEN": csrfToken, // Correct Laravel requirement
+                    "X-CSRF-TOKEN": csrfToken, 
                     "Accept": "application/json"
                 },
                 body: JSON.stringify(payload)
             })
             .then(res => {
-                // Catch non-200 responses (like 422 for validation, or a true 500)
                 if (!res.ok) {
-                    // If it's a 422, the response should still be JSON
                     if (res.status === 422) {
                         return res.json().then(data => {
                             // Display validation errors if available
@@ -477,43 +456,38 @@ document.addEventListener("DOMContentLoaded", () => {
                             throw new Error("Validation failed.");
                         });
                     } else {
-                        // This handles a clean 500 error response without crashing
                         throw new Error(`Server responded with status: ${res.status}`);
                     }
                 }
-                // If res.ok is true, proceed to parse the expected JSON response
                 return res.json();
             })
             .then(data => {
                 if (data.success) {
-                    // ... Success logic
                     confirmModal?.classList.add("hidden");
                     confirmModal?.classList.remove("flex");
                     wasteModal?.classList.add("hidden");
                     wasteModal?.classList.remove("flex");
 
-                    alert("Waste entry saved to database!");
+                    showToast("Waste entry saved to database!");
                     location.reload(); 
                 } else {
-                    // Should be unreachable if the promise chain above is correct
-                    alert("Submission failed. Server error."); 
+                    showToast("Submission failed. Server error.");
                 }
             })
             .catch(err => {
-                // This catches the 'Unexpected token <' (now a controlled error) and other network/parse errors
                 console.error(err);
-                alert("Submission failed. Check console for details.");
+                showToast("Submission failed. Check console for details.");
             });
         };
     }
 
     /* ---------------------------------------------
-     * DYNAMIC BUILDINGS BASED ON SELECTED CAMPUS
+     * 11.DYNAMIC BUILDINGS BASED ON SELECTED CAMPUS
      * ---------------------------------------------- */
 
     document.getElementById("entryCampus")?.addEventListener("change", function () {
         let campusId = this.value;
-        if (!campusId) return; // Exit if no campus is selected
+        if (!campusId) return;
 
         fetch(`/get-buildings/${campusId}`)
             .then(res => res.json())
@@ -521,14 +495,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 let buildingDropdown = document.getElementById("entryBuilding");
                 if (!buildingDropdown) return;
                 
-                buildingDropdown.innerHTML = ""; // clear old options
-                // Add default option
+                buildingDropdown.innerHTML = "";
                 let defaultOption = document.createElement('option');
                 defaultOption.value = "";
                 defaultOption.textContent = "Select Building";
                 buildingDropdown.appendChild(defaultOption);
 
-                // Populate with new options
                 data.forEach(building => {
                     let option = document.createElement('option');
                     option.value = building.id;
@@ -538,4 +510,63 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => console.error("Error fetching buildings:", err));
     });
+
+    /* ---------------------------------------------
+     * 12.TOAST FOR ALERT
+     * ---------------------------------------------- */
+
+        window.showToast = function(message, type = 'success', duration = 3000) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        let bgColor, textColor, iconClass;
+        
+        switch (type) {
+            case 'success':
+                bgColor = 'bg-emerald-500';
+                iconClass = '✅';
+                break;
+            case 'error':
+                bgColor = 'bg-rose-600';
+                iconClass = '❌';
+                break;
+            case 'warning':
+                bgColor = 'bg-amber-500';
+                iconClass = '⚠️';
+                break;
+            case 'info':
+                bgColor = 'bg-blue-500';
+                iconClass = 'ℹ️';
+                break;
+            default:
+                bgColor = 'bg-neutral-600';
+                iconClass = '💬';
+        }
+        
+        textColor = 'text-white'; 
+
+        const toast = document.createElement('div');
+        toast.className = `flex items-center p-3 rounded-lg shadow-xl ${bgColor} ${textColor} transform transition-all ease-in-out duration-300 opacity-0 translate-x-full`;
+        toast.innerHTML = `
+            <span class="mr-3 text-lg">${iconClass}</span>
+            <p class="font-medium">${message}</p>
+        `;
+
+        container.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.remove('opacity-0', 'translate-x-full');
+            toast.classList.add('opacity-100', 'translate-x-0');
+        }, 10);
+
+        setTimeout(() => {
+            toast.classList.remove('opacity-100', 'translate-x-0');
+            toast.classList.add('opacity-0', 'translate-x-full');
+
+            setTimeout(() => {
+                toast.remove();
+            }, 400);
+
+        }, duration);
+    }
 });

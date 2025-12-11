@@ -132,16 +132,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (deleteButton && deleteForm) {
         deleteButton.addEventListener("click", function() {
-            const campusName = "{{ $campus->name ?? 'this campus' }}"; // Assuming you have $campus available in the blade view
+            const campusName = "{{ $campus->name ?? 'this campus' }}";
             
             const confirmed = confirm(`🛑 WARNING: Are you sure you want to permanently delete the campus "${campusName}"? This action cannot be undone.`);
 
             if (confirmed) {
-                // Perform a second, more serious confirmation
                 const confirmedAgain = confirm("LAST CHANCE: Deleting will remove all buildings and waste data linked to this campus. Click OK to proceed.");
                 
                 if (confirmedAgain) {
-                    // If the user confirms twice, submit the form
                     deleteForm.submit();
                 }
             }

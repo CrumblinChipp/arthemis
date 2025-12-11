@@ -18,11 +18,11 @@
     @include('partials.modals') {{-- Partial for modals --}}
 
 <script>
-    // Ensure this route is defined in your routes/web.php
     const addCampusRoute = "{{ route('admin.campus.create') }}"; 
 </script>
-
+ 
 <script src="{{ asset('js/dashboardHandler.js') }}"></script>
-
+<div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col space-y-3">
+    </div>
 </body>
 </html>
