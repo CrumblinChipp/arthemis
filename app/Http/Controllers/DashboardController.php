@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Campus;
 use App\Models\WasteEntry;
+use App\Models\Building;
 use Carbon\Carbon;
 use DB;
 
@@ -204,5 +205,34 @@ class DashboardController extends Controller
         ]);
     }
 
-    
+// ... inside App\Http\Controllers\DashboardController
+
+// ... (Your existing index method ends here) ...
+
+
+/* -----------------------------------------------------
+ * API METHODS FOR MARKER CRUD
+ * --------------------------------------------------- */
+    public function updateBuildingCoordinates(Request $request, $buildingId)
+    {
+        // 1. Find the existing building
+        $building = \App\Models\Building::findOrFail($buildingId);
+
+        // 2. Validate the incoming coordinates
+        $validated = $request->validate([
+            'map_x_percent' => 'required|numeric|between:0,100',
+            'map_y_percent' => 'required|numeric|between:0,100',
+            // We require _method: 'PUT' to trigger this route using the POST method
+            '_method' => 'required|in:PUT', 
+        ]);
+        
+        // 3. Update only the coordinate fields
+        $building->update([
+            'map_x_percent' => $validated['map_x_percent'],
+            'map_y_percent' => $validated['map_y_percent'],
+        ]);
+
+        // 4. Return the updated building data
+        return response()->json($building);
+    }
 }
