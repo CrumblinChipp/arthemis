@@ -24,7 +24,7 @@ class WasteEntryController extends Controller
         'date' => now()->toDateString(),
         'building_id' => $validated['building_id'],
         
-        'biodegradable' => $validated['biodegradable_kg'], 
+        'biodegradable' => $validated['biodegradable_kg'],
         'recyclable' => $validated['recyclable_kg'],
         'residual' => $validated['residual_kg'],
         'infectious' => $validated['infectious_kg'],

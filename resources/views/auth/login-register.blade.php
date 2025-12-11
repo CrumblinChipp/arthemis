@@ -17,11 +17,10 @@
         }
     </style>
 </head>
-<body class="bg-linear-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen flex items-center justify-center p-5 font-sans">
-
+<body class="bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] min-h-screen flex items-center justify-center p-5 font-sans">
     <div class="bg-white/95 rounded-[20px] shadow-2xl overflow-hidden w-full max-w-[900px] flex flex-col md:flex-row min-h-[550px]">
         
-        <div class="bg-linear-to-br from-emerald-500 to-emerald-800 p-10 md:w-1/2 flex flex-col justify-center items-center text-white text-center">
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-800 p-10 md:w-1/2 flex flex-col justify-center items-center text-white text-center">
             <h1 class="text-4xl md:text-5xl font-bold uppercase tracking-[3px] mb-5">Arthemis</h1>
             <p class="text-lg opacity-90 leading-relaxed">
                 Welcome to our platform. Join us today and experience excellence in every interaction.
@@ -63,13 +62,13 @@
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-700">Email Address</label>
                         <input type="email" name="email" required placeholder="your@email.com" value="{{ old('email') }}" 
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
                     </div>
 
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-700">Password</label>
                         <input type="password" name="password" required placeholder="Enter password"
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
+                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 transition-all">
                     </div>
 
                     <div class="flex items-center gap-2 text-sm text-gray-600">
@@ -77,7 +76,7 @@
                         <label for="remember">Remember me</label>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 bg-linear-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all active:translate-y-0">
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all active:translate-y-0">
                         Login
                     </button>
                 </form>
@@ -97,36 +96,53 @@
                         <div>
                             <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Full Name</label>
                             <input type="text" name="name" required placeholder="John Doe" value="{{ old('name') }}"
-                                   class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
+                                class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">SR Code</label>
                             <input type="text" name="sr_code" required placeholder="SR-XXXX" value="{{ old('sr_code') }}"
-                                   class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
+                                class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
                         </div>
                     </div>
 
                     <div>
                         <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Email</label>
                         <input type="email" name="email" required placeholder="your@email.com"
-                               class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
+                            class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="password" name="password" required placeholder="Create password"
-                               class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
+                            class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
                         <input type="password" name="password_confirmation" required placeholder="Confirm password"
-                               class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
+                            class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none">
                     </div>
 
-                    <div>
-                        <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Role</label>
-                        <select name="role" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none bg-white">
-                            <option value="">Select Role</option>
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                            <option value="staff">Staff</option>
-                        </select>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-2">
+                        <div>
+                            <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Role</label>
+                            <select name="role" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none bg-white">
+                                <option value="">Select Role</option>
+                                <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                                <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Campus</label>
+                                <select name="campus_id" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none bg-white">
+                                    <option value="">Select Campus</option>
+                                    @if (isset($campuses))
+                                        @foreach ($campuses as $campus)
+                                            <option value="{{ $campus->id }}" {{ old('campus_id') == $campus->id ? 'selected' : '' }}>
+                                                {{ $campus->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex items-start gap-2 text-xs text-gray-600">
@@ -134,7 +150,7 @@
                         <label for="terms">I agree to the Terms & Conditions</label>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 bg-linear-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
+                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
                         Create Account
                     </button>
                 </form>

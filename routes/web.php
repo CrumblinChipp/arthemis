@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CampusController;
 use App\Http\Controllers\WasteEntryController;
 use App\Http\Middleware\AdminVerified;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\DataController;
 
 //
 // PUBLIC ROUTES (No Authentication Required)
@@ -19,19 +20,25 @@ Route::get('/', function () {
 })->name('home');
 
 // Auth Page (Login/Register) - Only for guests
-Route::get('/auth', function () {
-    return view('auth.login-register');
-})->name('auth.page')->middleware('guest');
+Route::get('/auth', [RegisterController::class, 'showRegistrationForm'])
+    ->middleware('guest')
+    ->name('auth.page');
 
 // Login & Register Actions
 Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.show');
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
 // Admin Verification
 Route::post('/admin/verify', [AdminAuthController::class, 'verify'])
     ->name('admin.verify');
 
-// 
+
+//Data Actions
+Route::get('/data', [DataController::class, 'showData'])->name('waste.data');
+// For deleting an entry
+Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('waste.destroy');
+
 // PROTECTED ROUTES (Authentication Required)
 // 
 

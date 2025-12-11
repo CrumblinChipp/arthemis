@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Building;
 use App\Models\Campus;
 use App\Models\WasteEntry;
 use Carbon\Carbon;
@@ -141,9 +140,44 @@ class DashboardController extends Controller
             ];
         }
 
+        /* -----------------------------------------------------
+         * 9. GATHERING WASTE ENTRIES
+         * --------------------------------------------------- */
+        $query = WasteEntry::query()->with('building');
+
+        // Search by Building Name
+        if ($request->search) {
+            $query->whereHas('building', function ($q) use ($request) {
+                // Assuming the Building model has a 'name' column
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Date filter
+        if ($request->date) {
+            $query->whereDate('date', $request->date);
+        }
+
+        if ($request->waste_type) {
+            $column = $request->waste_type;
+
+                if (in_array($request->waste_type, ['residual', 'recyclable', 'biodegradable', 'infectious'])) {
+                    $query->where($column, '>', 0);
+                }
+        }
+
+        $validPerPages = [20, 50, 100];
+        $perPage = (int)$request->input('per_page', 20);
+        if (!in_array($perPage, $validPerPages)) {
+            $perPage = 20; // Default if invalid value passed
+        }
+
+
+        $wastes = $query->orderBy('date', 'desc')->paginate($perPage)->appends($request->query()); 
+
 
         /* -----------------------------------------------------
-         * 9. RETURN TO VIEW
+         * 10. RETURN TO VIEW
          * --------------------------------------------------- */
 
         return view('partials.dashboard', [
@@ -166,6 +200,7 @@ class DashboardController extends Controller
             'selectedCampus' => $selectedCampus,
             'campus' => $campus,
             'buildings' => $buildings,
+            'wastes' => $wastes,
         ]);
     }
 }
