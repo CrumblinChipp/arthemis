@@ -11,7 +11,7 @@
     <section data-section="maps" class="content-section hidden">
         <h1 class="text-3xl font-bold mb-4">Maps</h1>
         <div id="maps-area">
-            {{-- Maps Content --}}
+            @include('sections.maps-content')
         </div>
     </section>
 
