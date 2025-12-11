@@ -1,84 +1,20 @@
-<div class="flex items-center justify-between mb-4">
-    <div class="flex items-center gap-3">
-
-        {{-- Date Quick Picker Button --}}
-        <button class="btn btn-primary btn-md" onclick="document.getElementById('date-filter').focus()">
-            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar">
-                <rect width="18" height="18" x="3" y="4" rx="2" />
-                <line x1="16" x2="16" y1="2" y2="6" />
-                <line x1="8" x2="8" y1="2" y2="6" />
-                <line x1="3" x2="21" y1="10" y2="10" />
-            </svg>
-        </button>
-
-        {{-- Toggle Column Visibility --}}
-        <div class="dropdown">
-            <label tabindex="0" class="btn">Toggle Columns</label>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-
-                {{-- JS toggles column by class name --}}
-                <li><a onclick="toggleColumn('col-residual')">Residual</a></li>
-                <li><a onclick="toggleColumn('col-recyclable')">Recyclable</a></li>
-                <li><a onclick="toggleColumn('col-biodegradable')">Biodegradable</a></li>
-                <li><a onclick="toggleColumn('col-infectious')">Infectious</a></li>
-
-                <div class="divider my-1"></div>
-                <li><a onclick="showAllColumns()">Show All</a></li>
-            </ul>
-        </div>
-
-        {{-- wastes Type Filter --}}
-        <div class="dropdown">
-            <label tabindex="0" class="btn">wastes Type Filters</label>
-            <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><a href="?wastes_type=residual">Residual</a></li>
-                <li><a href="?wastes_type=recyclable">Recyclable</a></li>
-                <li><a href="?wastes_type=biodegradable">Biodegradable</a></li>
-                <li><a href="?wastes_type=infectious">Infectious</a></li>
-                <div class="divider my-0"></div>
-                <li><a href="{{ route('dashboard') }}">Show All</a></li>
-            </ul>
-        </div>
-
-        {{-- Search + Date + Submit --}}
-        <form method="GET" action="{{ route('dashboard') }}" class="flex gap-2">
-            <input type="date" id="date-filter" name="date"
-                value="{{ request('date') }}"
-                class="input input-bordered w-40" />
-
-            <input type="text" placeholder="Search Building" name="search"
-                value="{{ request('search') }}"
-                class="input input-bordered w-60" />
-
-            <button type="submit" class="btn btn-ghost">Apply</button>
-
-            @if (request()->hasAny(['search', 'date', 'wastes_type']))
-                <a href="{{ route('dashboard') }}" class="btn btn-ghost">Clear</a>
-            @endif
-        </form>
-    </div>
-</div>
-
 
 {{-- TABLE --}}
 <div class="overflow-x-auto bg-white shadow-md rounded-lg">
     <table class="table table-zebra w-full">
         <thead>
             <tr>
-                <td><input type="checkbox" class="checkbox" /></td>
-                <td>{{ Carbon\Carbon::parse($wastes->date)->format('M d, Y') }}</td>
-                <td>{{ $wastes->building->name }}</td>
+                <th><input type="checkbox" class="checkbox" /></th>
+                <th>Date</th>               {{-- ADDED BACK --}}
+                <th>Building</th>           {{-- ADDED BACK --}}
 
-                <td class="text-center col-residual">{{ number_format($wastes->residual, 2) }}</td>
-                <td class="text-center col-recyclable">{{ number_format($wastes->recyclable, 2) }}</td>
-                <td class="text-center col-biodegradable">{{ number_format($wastes->biodegradable, 2) }}</td>
-                <td class="text-center col-infectious">{{ number_format($wastes->infectious, 2) }}</td>
-                <td class="text-center font-bold col-total">{{ number_format($totalWeight, 2) }}</td>
+                <th class="text-center col-residual">Residual (kg)</th>
+                <th class="text-center col-recyclable">Recyclable (kg)</th>
+                <th class="text-center col-biodegradable">Biodegradable (kg)</th>
+                <th class="text-center col-infectious">Infectious (kg)</th>
 
-                {{-- BIG X DELETE BUTTON --}}
-                <td class="text-right">
-                                        </td>
+                <th class="text-center font-bold col-total">Total (kg)</th>
+                <th class="text-right">Delete</th>
             </tr>
         </thead>
 
@@ -92,6 +28,10 @@
                     $waste->infectious;
             @endphp
                 <tr>
+                    <td><input type="checkbox" class="checkbox" /></td>  {{-- Checkbox --}}
+                    <td>{{ Carbon\Carbon::parse($waste->date)->format('M d, Y') }}</td> {{-- ADDED Date--}}
+                    <td>{{ $waste->building->name }}</td> {{-- ADDED Building Name --}}
+
                     <td class="text-center col-residual">{{ number_format($waste->residual, 2) }}</td>
                     <td class="text-center col-recyclable">{{ number_format($waste->recyclable, 2) }}</td>
                     <td class="text-center col-biodegradable">{{ number_format($waste->biodegradable, 2) }}</td>
@@ -137,16 +77,3 @@
         {{ $wastes->links('pagination::tailwind') }}
     </div>
 </div>
-
-
-{{-- COLUMN TOGGLING JS --}}
-<script>
-    function toggleColumn(className) {
-        document.querySelectorAll('.' + className)
-            .forEach(col => col.classList.toggle('hidden'));
-    }
-
-    function showAllColumns() {
-        document.querySelectorAll('[class^="col-"]').forEach(col => col.classList.remove('hidden'));
-    }
-</script>
