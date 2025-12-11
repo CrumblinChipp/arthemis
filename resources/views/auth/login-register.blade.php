@@ -130,20 +130,20 @@
                         </div>
                         
                         <div>
-                                <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Campus</label>
-                                <select name="campus_id" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none bg-white">
-                                    <option value="">Select Campus</option>
-                                    @if (isset($campuses))
-                                        @foreach ($campuses as $campus)
-                                            <option value="{{ $campus->id }}" {{ old('campus_id') == $campus->id ? 'selected' : '' }}>
-                                                {{ $campus->name }}
-                                            </option>
-                                        @endforeach
-                                    @endif
-                                </select>
-                            </div>
+                            <label class="block mb-1 text-xs font-semibold text-gray-700 uppercase">Campus</label>
+                            <select name="campus_id" required class="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg text-sm focus:border-emerald-500 focus:outline-none bg-white">
+                                <option value="">Select Campus</option>
+                                @if (isset($campuses))
+                                    @foreach ($campuses as $campus)
+                                        <option value="{{ $campus->id }}" {{ old('campus_id') == $campus->id ? 'selected' : '' }}>
+                                            {{ $campus->name }}
+                                        </option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
                     </div>
+            </div>
 
                     <div class="flex items-start gap-2 text-xs text-gray-600">
                         <input type="checkbox" id="terms" name="terms" required class="mt-1">
