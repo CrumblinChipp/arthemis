@@ -39,6 +39,9 @@ Route::get('/data', [DataController::class, 'showData'])->name('waste.data');
 // For deleting an entry
 Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('waste.destroy');
 
+//map actions
+Route::post('buildings/{id}/coordinates', [DashboardController::class, 'updateBuildingCoordinates']);
+
 // PROTECTED ROUTES (Authentication Required)
 // 
 
