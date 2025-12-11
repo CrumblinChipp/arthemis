@@ -70,7 +70,7 @@
 
     <div class="cloud cloud-1 hidden md:block absolute bg-white rounded-full opacity-90 z-20 w-[180px] h-[80px] top-20 left-12 animate-float-8s"></div>
     <div class="cloud cloud-2 hidden md:block absolute bg-white rounded-full opacity-90 z-20 w-[220px] h-[90px] top-40 right-24 animate-float-10s"></div>
-    <div class="cloud cloud-3 hidden md:block absolute bg-white rounded-full opacity-90 z-20 w-[150px] h-[70px] bottom-52 left-24 animate-float-9s"></div>
+    <div class="cloud cloud-3 hidden md:block absolute bg-white rounded-full opacity-90 z-20 w-[160px] h-[60px] bottom-40 left-5 animate-float-9s"></div>
     <div class="cloud cloud-4 hidden md:block absolute bg-white rounded-full opacity-90 z-20 w-[200px] h-[85px] bottom-40 right-40 animate-float-11s"></div>
 
     <nav id="navbar" class="fixed top-0 left-0 right-0 flex justify-between items-center px-6 md:px-16 py-5 bg-black/30 backdrop-blur-md z-[1000] transition-all duration-300">
@@ -85,7 +85,7 @@
         <ul id="navLinks" class="nav-links hidden md:flex gap-10 items-center list-none md:static absolute top-[70px] left-0 right-0 flex-col md:flex-row bg-black/95 md:bg-transparent w-full md:w-auto p-10 md:p-0 transition-all duration-300">
             
             <li><a href="#features" class="nav-link-underline text-white hover:text-emerald-400 text-sm font-medium tracking-wider relative transition-colors duration-300">FEATURES</a></li>
-            <li><a href="#about" class="nav-link-underline text-white hover:text-emerald-400 text-sm font-medium tracking-wider relative transition-colors duration-300">ABOUT US</a></li>
+            
             
             <li class="w-full md:w-auto flex flex-col md:flex-row gap-2 mt-4 md:mt-0">
                 <a href="{{ route('auth.page') }}" class="flex items-center justify-center gap-2 w-full px-7 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-lg transition-all duration-300 hover:-translate-y-0.5 shadow-md">
@@ -103,8 +103,8 @@
                     Redefining Waste for a<br>
                     <span class="text-emerald-400">Cleaner, Greener Tomorrow!</span>
                 </h1>
-                <a href="#" onclick="scrollToContact()" class="inline-block px-10 py-4 bg-white/15 text-white border-2 border-white/30 rounded-full cursor-pointer font-semibold text-base transition-all duration-300 backdrop-blur-lg hover:bg-white/25 hover:border-white/50 hover:-translate-y-1 shadow-xl animate-fadeInUp-1_2s">
-                    Contact Us
+                
+                
                 </a>
             </div>
         </div>
