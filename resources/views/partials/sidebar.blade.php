@@ -63,7 +63,7 @@
     @endif
     <form action="{{ route('logout') }}" method="POST" class="w-full md:w-auto">
         @csrf
-        <button type="submit" class="flex items-center justify-center gap-2 w-full px-7 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm rounded-lg transition-all duration-300 hover:-translate-y-0.5 shadow-md">
+        <button type="submit" class="mt-4 flex items-center justify-center gap-2 w-full px-7 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm rounded-lg transition-all duration-300 hover:-translate-y-0.5 shadow-md">
             <span>⏻</span>
             <span class="hidden md:inline">Logout</span>
         </button>
