@@ -143,6 +143,11 @@
                             </select>
                         </div>
                     </div>
+<<<<<<< HEAD
+=======
+            </div>
+
+>>>>>>> 9f76bccaaadd3a24cfe9fa9c0ea11953c3c5064c
                     <div class="mt-4 flex items-start gap-2 text-xs text-gray-600">
                         <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">I agree to the Terms & Conditions</label>
