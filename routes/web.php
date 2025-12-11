@@ -30,8 +30,7 @@ Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->na
 Route::post('/register', [RegisterController::class, 'register'])->name('register');
 
 // Admin Verification
-Route::post('/admin/verify', [AdminAuthController::class, 'verify'])
-    ->name('admin.verify');
+Route::put('buildings/{id}/coordinates', [DashboardController::class, 'updateBuildingCoordinates']);
 
 
 //Data Actions
@@ -40,7 +39,9 @@ Route::get('/data', [DataController::class, 'showData'])->name('waste.data');
 Route::delete('/data/{id}', [DataController::class, 'destroy'])->name('waste.destroy');
 
 //map actions
-Route::post('buildings/{id}/coordinates', [DashboardController::class, 'updateBuildingCoordinates']);
+Route::post('buildings/{id}/coordinates', [DashboardController::class, 'updateBuildingCoordinates'])
+    ->name('api.buildings.update_coords'); // Add a name for optional use
+Route::get('campus-map-viewer', [DashboardController::class, 'showCampusMapViewer'])->name('campus.map.viewer');
 
 // PROTECTED ROUTES (Authentication Required)
 // 

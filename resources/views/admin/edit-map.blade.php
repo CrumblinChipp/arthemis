@@ -315,7 +315,7 @@
             try {
                 console.log(`Sending DELETE (PUT with null) request for Building ID: ${id}`);
                 
-                const response = await fetch(`/api/buildings/${id}/coordinates`, {
+                const response = await fetch(`/buildings/${id}/coordinates`, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -367,9 +367,9 @@
                 map_y_percent: parseFloat(markerYInput.value),
             };
             
-            const url = `/api/buildings/${buildingId}/coordinates`;
+            const url = `/buildings/${buildingId}/coordinates`;
 
-            // --- API CALL: POST (with _method: PUT) ---
+            // --- CALL: POST (with _method: PUT) ---
             try {
                 console.log(`UPDATE request to ${url} with data:`, markerData);
                 

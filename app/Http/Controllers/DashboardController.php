@@ -216,13 +216,13 @@ class DashboardController extends Controller
     public function updateBuildingCoordinates(Request $request, $buildingId)
     {
         // 1. Find the existing building
-        $building = \App\Models\Building::findOrFail($buildingId);
+        $building = Building::findOrFail($buildingId);
 
         // 2. Validate the incoming coordinates
+        // CHANGE 'required' to 'nullable' so you can clear the marker
         $validated = $request->validate([
-            'map_x_percent' => 'required|numeric|between:0,100',
-            'map_y_percent' => 'required|numeric|between:0,100',
-            // We require _method: 'PUT' to trigger this route using the POST method
+            'map_x_percent' => 'nullable|numeric|between:0,100', 
+            'map_y_percent' => 'nullable|numeric|between:0,100',
             '_method' => 'required|in:PUT', 
         ]);
         
@@ -234,5 +234,16 @@ class DashboardController extends Controller
 
         // 4. Return the updated building data
         return response()->json($building);
+    }
+
+    public function showCampusMapViewer()
+    {
+        // Fetch all buildings that have coordinates set (assuming 'latitude' and 'longitude' are on the 'buildings' table)
+        $buildings = Building::whereNotNull('map_x_percent')
+                            ->whereNotNull('map_y_percent')
+                            ->get(['name', 'map_x_percent', 'map_y_percent']);
+
+        // Pass the building data to the new view
+        return view('sections.map-content', compact('buildings'));
     }
 }
