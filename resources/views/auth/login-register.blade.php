@@ -145,12 +145,12 @@
                     </div>
             </div>
 
-                    <div class="flex items-start gap-2 text-xs text-gray-600">
-                        <input type="checkbox" id="terms" name="terms" required class="mt-1">
+                    <div class="mt-4 flex items-start gap-2 text-xs text-gray-600">
+                        <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">I agree to the Terms & Conditions</label>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
+                    <button type="submit" class="mt-4 w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 text-white font-bold rounded-lg shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 transition-all">
                         Create Account
                     </button>
                 </form>
