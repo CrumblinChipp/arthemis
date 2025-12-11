@@ -1,67 +1,49 @@
-    <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Campus Map Viewer</h1>
+<div class="p-4 max-w-7xl mx-auto">
+    <h2 class="text-3xl font-bold my-6 text-gray-800">Campus Map: {{ $campus->name ?? 'Select Campus' }}</h2>
+
+    <div class="flex flex-col lg:flex-row gap-8">
         
-        {{-- The map container --}}
-        <div id="viewMap" style="height: 600px; width: 100%;"></div>
-
-    </div>
-
-
-    {{-- Make sure you have the Leaflet CSS and JS links in your layout or here --}}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/SVSLqlAqHDgQO_C68="
-        crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-        integrity="sha256-20n636lF2gJg+pL894O7k2xQ5K5G6/pXF5V/jH+fK5+"
-        crossorigin=""></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // 1. Initialize the map
-            // Use your campus center coordinates here. Example:
-            var initial map_x_percent = 14.75; 
-            var initial map_y_percent = 121.01;
-            var mapZoom = 15;
-
-            var map = L.map('viewMap').setView([initial map_x_percent, initial map_y_percent], mapZoom);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
-
-            // 2. Get the building data passed from the controller
-            // The JSON encode ensures the data is safely passed to JavaScript
-            var buildings = @json($buildings);
-
-            // 3. Loop through the buildings and add markers
-            buildings.forEach(function(building) {
-                if (building. map_x_percent && building. map_y_percent) {
-                    var marker = L.marker([building. map_x_percent, building. map_y_percent]).addTo(map);
-
-                    // Optional: Make the marker title the building name for screen readers
-                    marker.options.title = building.name;
-
-                    // Implement the HOVER effect (Tooltip)
-                    // Tooltips open on mouseover and close on mouseout by default
-                    marker.bindTooltip(building.name, {
-                        permanent: false, // Don't show permanently
-                        direction: 'top', // Position the tooltip above the marker
-                        offset: [0, -10] // Adjust position if needed
-                    });
-                    
-                    // Optional: Fly to the first marker on load
-                    // map.flyTo([building. map_x_percent, building. map_y_percent], mapZoom); 
-                }
-            });
+        <div id="map-container" class="relative bg-gray-100 border border-gray-300 shadow-xl rounded-lg overflow-hidden lg:w-3/4">
             
-            // Optional: If you want to fit the map view to show ALL markers
-            if (buildings.length > 0) {
-                 var group = new L.featureGroup(
-                    buildings.map(b => L.marker([b. map_x_percent, b. map_y_percent]))
-                 );
-                 map.fitBounds(group.getBounds().pad(0.1)); // Pad adds a little margin
-            }
+            @if($campus && $campus->map)
+                <img 
+                    id="campus-map" 
+                    src="{{ asset('storage/' . $campus->map) }}" 
+                    alt="{{ $campus->name }} Map" 
+                    class="w-full h-auto cursor-crosshair"
+                >
+            @else
+                <div class="h-96 flex items-center justify-center text-gray-500">
+                    No map image uploaded for this campus.
+                </div>
+            @endif
 
-
-        });
-    </script>
+            <div id="marker-layer" class="absolute inset-0 pointer-events-none">
+                
+                @foreach($buildings as $building)
+                    @if(isset($building->map_x_percent) && isset($building->map_y_percent))
+                    <div 
+                        class="absolute w-4 h-4 rounded-full shadow-lg border-2 border-white bg-red-600 transition-all duration-200 cursor-pointer group permanent-marker pointer-events-auto"
+                        style="
+                            left: {{ $building->map_x_percent }}%;
+                            top: {{ $building->map_y_percent }}%;
+                            transform: translate(-50%, -50%);
+                        "
+                        data-building-id="{{ $building->id }}"
+                        data-building-name="{{ $building->name }}"
+                        data-x-percent="{{ $building->map_x_percent }}"
+                        data-y-percent="{{ $building->map_y_percent }}"
+                    >
+                        <span 
+                            class="absolute whitespace-nowrap -bottom-6 left-1/2 transform -translate-x-1/2 text-xs font-semibold bg-gray-800 text-white p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        >
+                            {{ $building->name }}
+                        </span>
+                    </div>
+                    @endif
+                @endforeach
+            </div>
+            
+        </div>
+    </div>
+</div>

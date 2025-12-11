@@ -236,14 +236,29 @@ class DashboardController extends Controller
         return response()->json($building);
     }
 
-    public function showCampusMapViewer()
-    {
-        // Fetch all buildings that have coordinates set (assuming 'latitude' and 'longitude' are on the 'buildings' table)
-        $buildings = Building::whereNotNull('map_x_percent')
-                            ->whereNotNull('map_y_percent')
-                            ->get(['name', 'map_x_percent', 'map_y_percent']);
+public function showCampusMapViewer()
+{
+    // 1. Fetch the relevant map record (assuming there's a key/ID for the campus map)
+    // You might need to adjust the query below if you have multiple maps. 
+    // For now, we'll fetch the first one or a known ID (e.g., ID 1).
+    $campusMap = Map::find(1); // Adjust '1' to your actual map ID if needed
 
-        // Pass the building data to the new view
-        return view('sections.map-content', compact('buildings'));
+    if (!$campusMap) {
+        // Handle case where map is not found
+        abort(404, 'Campus map not found.');
     }
+    
+    // 2. Fetch all buildings with coordinates
+    $buildings = Building::whereNotNull('map_x_percent')
+                         ->whereNotNull('map_y_percent')
+                         ->get(['name', 'map_x_percent', 'map_y_percent']);
+
+    // 3. Convert the internal storage path to a public URL
+    // The path 'storage/public/maps/image.jpg' becomes a URL like '/storage/maps/image.jpg' 
+    // thanks to the 'php artisan storage:link' setup.
+    $imageUrl = asset('storage/' . $campusMap->map_path); // Use the asset helper for the public URL
+
+    // 4. Pass the data to the view
+    return view('dashboard.campus-map-viewer', compact('buildings', 'imageUrl'));
+}
 }
